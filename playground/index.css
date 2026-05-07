@@ -1,0 +1,7 @@
+html,
+body,
+/* height: 100% prevents weird tiny scrolling behavior as chrome seems to add some small padding */
+#root {
+  height: 100%;
+  margin: 0;
+}
