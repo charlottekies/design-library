@@ -1,25 +1,42 @@
 {
   "compilerOptions": {
     "tsBuildInfoFile": "./node_modules/.tmp/tsconfig.app.tsbuildinfo",
-    "target": "es2023",
-    "lib": ["ES2023", "DOM"],
-    "module": "esnext",
-    "types": ["vite/client"],
-    "skipLibCheck": true,
 
-    /* Bundler mode */
+    /* Language */
+    "target": "ES2023",
+    "lib": ["ES2023", "DOM"],
+
+    /* Modules */
+    "module": "ESNext",
     "moduleResolution": "bundler",
-    "allowImportingTsExtensions": true,
-    "verbatimModuleSyntax": true,
-    "moduleDetection": "force",
-    "noEmit": true,
+
+    /* React */
     "jsx": "react-jsx",
 
-    /* Linting */
+    /* Environment */
+    "types": ["vite/client"],
+
+    /* Output (Vite handles bundling) */
+    "noEmit": true,
+    "skipLibCheck": true,
+
+    /* Strictness */
+    "strict": true,
     "noUnusedLocals": true,
     "noUnusedParameters": true,
-    "erasableSyntaxOnly": true,
-    "noFallthroughCasesInSwitch": true
+    "noFallthroughCasesInSwitch": true,
+
+    /* Modern bundler behavior */
+    "verbatimModuleSyntax": true,
+    "moduleDetection": "force",
+
+    /* Path alias (OPTIONAL for now — remove later when you go full NPM-style) */
+    "baseUrl": ".",
+    "paths": {
+      "design-library": ["src/index.ts"],
+      "design-library/*": ["src/*"]
+    }
   },
-  "include": ["src"]
+
+  "include": ["src", "playground"]
 }

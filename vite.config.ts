@@ -16,6 +16,11 @@ export default defineConfig({
     presets: [reactCompilerPreset()]
   })],
   root: "playground",
+  resolve: {
+    alias: {
+      "design-library": path.resolve(__dirname, "src")
+    }
+  },
   test: {
     projects: [{
       extends: true,
