@@ -15,6 +15,7 @@ export default defineConfig({
   plugins: [react(), babel({
     presets: [reactCompilerPreset()]
   })],
+  root: "playground",
   test: {
     projects: [{
       extends: true,
