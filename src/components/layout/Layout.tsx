@@ -64,7 +64,7 @@ export const Layout = ({ header, sidebar, children }: LayoutProps) => {
         closeSidebar,
       }}
     >
-      <StyledLayoutContainer hasSidebar={!!sidebar}>
+      <StyledLayoutContainer hasSidebar={!!sidebar} hasHeader={!!header}>
 
         {/* DESKTOP HEADER */}
         {!isMobile && header && (
@@ -80,14 +80,14 @@ export const Layout = ({ header, sidebar, children }: LayoutProps) => {
           </StyledSidebarSlot>
         )}
 
-        {/* MOBILE HEADER (no hamburger ownership here) */}
+        {/* MOBILE HEADER */}
         {isMobile && header && (
           <MobileHeader>
             {header}
           </MobileHeader>
         )}
 
-        {/* MAIN CONTENT */}
+        {/* MAIN */}
         <StyledMainContentArea>
           {children}
         </StyledMainContentArea>
@@ -98,28 +98,48 @@ export const Layout = ({ header, sidebar, children }: LayoutProps) => {
 };
 
 /* =========================
-   LAYOUT GRID
+   LAYOUT GRID (FIXED CORE BUG)
    ========================= */
 
-export const StyledLayoutContainer = styled.div<{ hasSidebar: boolean }>`
+export const StyledLayoutContainer = styled.div<{
+  hasSidebar: boolean;
+  hasHeader: boolean;
+}>`
   display: grid;
   height: 100vh;
   width: 100vw;
   overflow: hidden;
 
-  grid-template-columns: ${p => (p.hasSidebar ? '300px 1fr' : '1fr')};
-  grid-template-rows: 100px 1fr;
+  grid-template-columns: ${p =>
+    p.hasSidebar ? '300px 1fr' : '1fr'};
 
-  grid-template-areas: ${p =>
-    p.hasSidebar
-      ? `
-        "sidebar header"
+  /* 🔥 CRITICAL FIX: header row is now conditional */
+  grid-template-rows: ${p =>
+    p.hasHeader ? '100px 1fr' : '1fr'};
+
+  grid-template-areas: ${p => {
+    if (p.hasHeader && p.hasSidebar) {
+      return `
+        "header header"
         "sidebar main"
-      `
-      : `
+      `;
+    }
+
+    if (p.hasHeader && !p.hasSidebar) {
+      return `
         "header"
         "main"
-      `};
+      `;
+    }
+
+    if (!p.hasHeader && p.hasSidebar) {
+      return `
+        "sidebar main"
+      `;
+    }
+
+    return `"main"`;
+  }};
 
   @media (max-width: 1200px) {
     grid-template-columns: ${p =>
@@ -128,6 +148,7 @@ export const StyledLayoutContainer = styled.div<{ hasSidebar: boolean }>`
 
   @media (max-width: 768px) {
     grid-template-columns: 1fr;
+    grid-template-rows: 100px 1fr; // make room for a mobile header
     grid-template-areas:
       "header"
       "main";
@@ -135,7 +156,7 @@ export const StyledLayoutContainer = styled.div<{ hasSidebar: boolean }>`
 `;
 
 /* =========================
-   HEADER (DESKTOP)
+   HEADER SLOT (FIXED)
    ========================= */
 
 export const StyledHeaderSlot = styled.header`
@@ -147,8 +168,7 @@ export const StyledHeaderSlot = styled.header`
   display: flex;
   align-items: center;
 
-
-  // make content fill up whole header slot
+/* allow children to stretch full width */
   & > * {
     flex: 1;
     min-width: 0;
@@ -169,8 +189,7 @@ export const MobileHeader = styled.header`
   display: flex;
   align-items: center;
 
-
-  // make content fill up whole header slot
+/* allow children to stretch full width */
   & > * {
     flex: 1;
     min-width: 0;
@@ -179,7 +198,7 @@ export const MobileHeader = styled.header`
 `;
 
 /* =========================
-   SIDEBAR (DRAWER ON MOBILE)
+   SIDEBAR
    ========================= */
 
 export const StyledSidebarSlot = styled.aside`
