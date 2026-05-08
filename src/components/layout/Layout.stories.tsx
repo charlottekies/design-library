@@ -5,11 +5,15 @@ const metadata: Meta<typeof Layout> = {
   title: 'Components/Layout',
   component: Layout,
   parameters: {
-    layout: 'fullscreen', // Ensures 100vh/100vw behavior
+    layout: 'fullscreen',
+    viewport: {
+      defaultViewport: 'desktop',
+    },
   },
   argTypes: {
     header: { control: false },
     sidebar: { control: false },
+    icons: { control: false },
   },
 };
 
@@ -17,7 +21,9 @@ export default metadata;
 
 type Story = StoryObj<typeof Layout>;
 
-/** Helper for visualization */
+/* ------------------------------------
+ * Placeholder
+ * ------------------------------------ */
 const Placeholder = ({ label, color }: { label: string; color: string }) => (
   <div
     style={{
@@ -35,35 +41,73 @@ const Placeholder = ({ label, color }: { label: string; color: string }) => (
 );
 
 /* ------------------------------------
- * DEFAULT (FULL LAYOUT)
+ * DEFAULT (DESKTOP + MOBILE BEHAVIOR)
  * ------------------------------------ */
 export const Default: Story = {
   args: {
-    header: <Placeholder label="Header (100px)" color="#2c3e50" />,
-    sidebar: <Placeholder label="Sidebar (300px)" color="#34495e" />,
+    header: <Placeholder label="Header" color="#2c3e50" />,
+    sidebar: <Placeholder label="Sidebar" color="#34495e" />,
     children: <Placeholder label="Main Content" color="#ecf0f1" />,
+  },
+  parameters: {
+    viewport: {
+      defaultViewport: 'desktop',
+    },
   },
 };
 
 /* ------------------------------------
- * NO SIDEBAR
+ * WITHOUT HEADER (IMPORTANT EDGE CASE)
+ * ------------------------------------ */
+export const NoHeader: Story = {
+  args: {
+    sidebar: <Placeholder label="Sidebar Drawer" color="#34495e" />,
+    children: (
+      <Placeholder label="Main Content (No Header)" color="#ecf0f1" />
+    ),
+  },
+  parameters: {
+    viewport: {
+      defaultViewport: 'mobile1',
+    },
+  },
+};
+/* ------------------------------------
+ * WITHOUT HEADER (IMPORTANT EDGE CASE)
  * ------------------------------------ */
 export const NoSidebar: Story = {
   args: {
     header: <Placeholder label="Header" color="#2c3e50" />,
-    children: <Placeholder label="Main Content (Full Width)" color="#ecf0f1" />,
+    children: (
+      <Placeholder label="Main Content (No Header)" color="#ecf0f1" />
+    ),
+  },
+  parameters: {
+    viewport: {
+      defaultViewport: 'mobile1',
+    },
   },
 };
 
 /* ------------------------------------
- * ONLY CONTENT
+ * CUSTOM ICON OVERRIDE
  * ------------------------------------ */
-export const OnlyContent: Story = {
+export const CustomMenuIcon: Story = {
   args: {
-    children: (
-      <Placeholder label="Main Content (Full Screen)" color="#ecf0f1" />
-    ),
+    header: <Placeholder label="Header" color="#2c3e50" />,
+    sidebar: <Placeholder label="Sidebar Drawer" color="#34495e" />,
+    icons: {
+      menu: (
+        <span style={{ fontSize: 20 }}>
+          🍔
+        </span>
+      ),
+    },
+    children: <Placeholder label="Main Content" color="#ecf0f1" />,
+  },
+  parameters: {
+    viewport: {
+      defaultViewport: 'mobile1',
+    },
   },
 };
-
-
