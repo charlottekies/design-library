@@ -19,7 +19,7 @@ Our color tokens come out of the box with a default color scheme, meaning hex co
 
 #### Example: 
 ```
-import { color } from "@charlottekies/tokens";
+import { color } from "@charlottekies/design-library/tokens";
 
 export function Card() {
   return (
