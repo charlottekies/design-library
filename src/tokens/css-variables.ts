@@ -13,6 +13,9 @@ export const cssVariables = `
   --color-primary: ${raw.purple300};
   --color-primary-hover: ${raw.purple200};
   --color-primary-pressed: ${raw.purple400};
-  --primary-disabled: ${raw.gray200};
+  --color-primary-disabled: ${raw.gray200};
+
+  --color-border-primary: ${raw.gray300};
+  --color-border-highlight: ${raw.purple300};
 }
 `;

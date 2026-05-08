@@ -18,6 +18,10 @@ export const color = {
         hover: "var(--color-primary-hover)",
         pressed: "var(--color-primary-pressed)",
         disabled: "var(--color-primary-disabled)",
+    },
+    border: {
+        primary: "var(--color-border-primary)",
+        highlight: "var(--color-border-highlight)",
     }
 };
 
