@@ -1,5 +1,6 @@
 import type { ReactNode } from 'react';
 import styled from '@emotion/styled';
+import { createContext, useContext, useEffect, useState } from 'react';
 
 export interface LayoutProps {
   header?: ReactNode;
@@ -7,21 +8,82 @@ export interface LayoutProps {
   children: ReactNode;
 }
 
-/**
- * @param header spans top of layout
- * @param sidebar left navigation slot
- */
+/* =========================
+   CONTEXT (optional usage)
+   ========================= */
+interface LayoutContextValue {
+  isMobile: boolean;
+  sidebarOpen: boolean;
+  toggleSidebar: () => void;
+}
+
+const LayoutContext = createContext<LayoutContextValue | null>(null);
+
+export const useLayout = () => {
+  const ctx = useContext(LayoutContext);
+  if (!ctx) throw new Error('useLayout must be used within Layout');
+  return ctx;
+};
+
+/* =========================
+   LAYOUT
+   ========================= */
 export const Layout = ({ header, sidebar, children }: LayoutProps) => {
+  const [sidebarOpen, setSidebarOpen] = useState(false);
+  const [isMobile, setIsMobile] = useState(false);
+
+  /* Detect mobile breakpoint */
+  useEffect(() => {
+    const mq = window.matchMedia('(max-width: 768px)');
+
+    const update = () => setIsMobile(mq.matches);
+    update();
+
+    mq.addEventListener('change', update);
+    return () => mq.removeEventListener('change', update);
+  }, []);
+
+  const toggleSidebar = () => setSidebarOpen(v => !v);
+
+  /* Auto-close drawer when leaving mobile */
+  useEffect(() => {
+    if (!isMobile) setSidebarOpen(false);
+  }, [isMobile]);
+
   return (
-    <StyledLayoutContainer hasHeader={!!header} hasSidebar={!!sidebar}>
-      {header && <StyledHeaderSlot>{header}</StyledHeaderSlot>}
-      {sidebar && <StyledSidebarSlot>{sidebar}</StyledSidebarSlot>}
-      <StyledMainContentArea>{children}</StyledMainContentArea>
-    </StyledLayoutContainer>
+    <LayoutContext.Provider
+      value={{ isMobile, sidebarOpen, toggleSidebar }}
+    >
+      <StyledLayoutContainer hasHeader={!!header} hasSidebar={!!sidebar}>
+        {header && (
+          <StyledHeaderSlot>
+            {header}
+
+            {/* Auto hamburger (only mobile + sidebar exists) */}
+            {isMobile && sidebar && (
+              <HamburgerButton onClick={toggleSidebar}>
+                ☰
+              </HamburgerButton>
+            )}
+          </StyledHeaderSlot>
+        )}
+
+        {sidebar && (
+          <StyledSidebarSlot data-open={sidebarOpen}>
+            {sidebar}
+          </StyledSidebarSlot>
+        )}
+
+        <StyledMainContentArea>{children}</StyledMainContentArea>
+      </StyledLayoutContainer>
+    </LayoutContext.Provider>
   );
 };
 
-/* Styled Components */
+/* =========================
+   STYLED COMPONENTS
+   ========================= */
+
 export interface StyledLayoutContainerProps {
   hasHeader: boolean;
   hasSidebar: boolean;
@@ -33,60 +95,49 @@ export const StyledLayoutContainer = styled.div<StyledLayoutContainerProps>`
   width: 100vw;
   overflow: hidden;
 
-  /* Base desktop layout */
-  grid-template-columns: ${props => (props.hasSidebar ? '300px 1fr' : '1fr')};
-  grid-template-rows: ${props => (props.hasHeader ? '100px 1fr' : '1fr')};
+  /* Desktop */
+  grid-template-columns: ${p => (p.hasSidebar ? '300px 1fr' : '1fr')};
+  grid-template-rows: ${p => (p.hasHeader ? '100px 1fr' : '1fr')};
 
-  grid-template-areas: ${props => {
-    if (props.hasHeader && props.hasSidebar) {
+  grid-template-areas: ${p => {
+    if (p.hasHeader && p.hasSidebar) {
       return `
         "sidebar header"
         "sidebar main"
       `;
     }
-
-    if (props.hasHeader && !props.hasSidebar) {
-      return `
-        "header"
-        "main"
-      `;
-    }
-
-    if (!props.hasHeader && props.hasSidebar) {
-      return `
-        "sidebar main"
-      `;
-    }
-
+    if (p.hasHeader) return `"header" "main"`;
+    if (p.hasSidebar) return `"sidebar main"`;
     return `"main"`;
   }};
 
   /* Tablet: collapsed rail */
   @media (max-width: 1200px) {
-    grid-template-columns: ${props =>
-      props.hasSidebar ? '100px 1fr' : '1fr'};
+    grid-template-columns: ${p =>
+      p.hasSidebar ? '100px 1fr' : '1fr'};
   }
 
-  /* Mobile: REMOVE sidebar from layout entirely */
+  /* Mobile: sidebar removed from grid (drawer mode) */
   @media (max-width: 768px) {
     grid-template-columns: 1fr;
-    grid-template-rows: ${props =>
-      props.hasHeader ? '100px 1fr' : '1fr'};
+    grid-template-rows: ${p =>
+      p.hasHeader ? '100px 1fr' : '1fr'};
 
-    grid-template-areas: ${props =>
-      props.hasHeader ? `"header" "main"` : `"main"`};
-
-    /* 🔥 CRITICAL FIX:
-       Prevent orphan grid item behavior */
-    & > *:nth-of-type(2) {
-      grid-area: unset;
-    }
+    grid-template-areas: ${p =>
+      p.hasHeader ? `"header" "main"` : `"main"`};
   }
 `;
 
 export const StyledHeaderSlot = styled.header`
   grid-area: header;
-  z-index: 10;
+  width: 100%; 
+  display: flex;
+  align-items: center;
+
+  & > * {
+    flex: 1;
+    min-width: 0;
+  }
 `;
 
 export const StyledSidebarSlot = styled.aside`
@@ -94,9 +145,24 @@ export const StyledSidebarSlot = styled.aside`
   height: 100%;
   overflow: hidden;
 
-  /* IMPORTANT FIX: Mobile must fully remove sidebar from grid flow */
+  /* Mobile drawer behavior */
   @media (max-width: 768px) {
-    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+
+    width: 280px;
+    height: 100vh;
+
+    background: white;
+    z-index: 1000;
+
+    transform: translateX(-100%);
+    transition: transform 0.2s ease;
+
+    &[data-open="true"] {
+      transform: translateX(0);
+    }
   }
 `;
 
@@ -104,4 +170,16 @@ export const StyledMainContentArea = styled.main`
   grid-area: main;
   overflow-y: auto;
   position: relative;
+`;
+
+const HamburgerButton = styled.button`
+  margin-left: auto;
+  font-size: 20px;
+  background: none;
+  border: none;
+  cursor: pointer;
+
+  @media (min-width: 769px) {
+    display: none;
+  }
 `;
