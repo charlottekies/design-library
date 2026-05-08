@@ -1,6 +1,7 @@
 import type { ReactNode } from 'react';
 import styled from '@emotion/styled';
 import { color } from '../../tokens/semantic-color';
+import { space } from '../../tokens/space';
 
 
 interface SidebarProps {
@@ -40,13 +41,13 @@ const StyledSidebarContainer = styled.aside`
   flex-direction: column;
   height: 100%;
   background-color: ${color.surface.default};
-  border-right: 1px solid ${color.border.primary};
+  border-right: ${space.space02} solid ${color.border.primary};
 `;
 
 const StyledSidebarHeader = styled.div`
   padding: 1rem;
   flex-shrink: 0;
-  border-bottom: 1px solid ${color.border.primary};
+  border-bottom: ${space.space02} solid ${color.border.primary};
 `;
 
 export const StyledSidebarNav = styled.nav`
@@ -58,5 +59,5 @@ export const StyledSidebarNav = styled.nav`
 export const StyledSidebarFooter = styled.div`
   padding: 1rem;
   flex-shrink: 0;
-  border-top: 1px solid ${color.border.primary};
+  border-top: ${space.space02} solid ${color.border.primary};
 `;
