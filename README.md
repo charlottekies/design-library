@@ -1,3 +1,66 @@
+# General
+This repository holds and exports design elements that can be used to build a website. 
+
+## Structure
+In the src directory you will find:
+> components
+  - This is where custom buttons, sidebars, input fields, and other type of React components are held
+> icons
+  - In here as you might expect, are custom-designed icons with variable sizes (e.g. pencil, home, book...)
+> tokens
+  - color tokens and spacing tokens are among the tokens that exist in here. You may use them to apply colors and consistent spacing to your website components
+> stories
+  - This is where every exported component's Storybook story will be defined. 
+
+<br>
+
+## Customizing colors
+Our color tokens come out of the box with a default color scheme, meaning hex codes for all of the color tokens you can use are already defined. Nothing for you to do! 
+
+#### Example: 
+```
+import { color } from "@charlottekies/tokens";
+
+export function Card() {
+  return (
+    <div
+      style={{
+        background: color.surface.default,
+        color: color.text.primary.default,
+      }}
+    >
+      Hello world
+    </div>
+  );
+}
+```
+
+### Defining your own colors
+If you want to define your own brand, you can modify the colors for each of our defined colors, while still making use of the same tokens: 
+
+#### Example: 
+```
+// In your project's theme/global/index.css
+:root {
+  --color-surface-default: #ffffff;
+  --color-text-primary: #111827;
+
+  --color-primary: #2563eb;
+  --color-primary-hover: #1d4ed8;
+  --color-primary-pressed: #1e40af;
+
+  --color-text-inverse: #ffffff;
+}
+```
+
+Then you can go about using the semantic color tokens as normal, but you will see your own colors appear!
+
+*********
+
+## Playground
+The playground directory is an area in which to test the functionality of the components exported from the src directory. 
+
+******
 # React + TypeScript + Vite
 
 This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
