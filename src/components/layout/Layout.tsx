@@ -9,7 +9,7 @@ export interface LayoutProps {
 }
 
 /* =========================
-   CONTEXT (optional usage)
+   CONTEXT (optional)
    ========================= */
 interface LayoutContextValue {
   isMobile: boolean;
@@ -29,10 +29,9 @@ export const useLayout = () => {
    LAYOUT
    ========================= */
 export const Layout = ({ header, sidebar, children }: LayoutProps) => {
-  const [sidebarOpen, setSidebarOpen] = useState(false);
   const [isMobile, setIsMobile] = useState(false);
+  const [sidebarOpen, setSidebarOpen] = useState(false);
 
-  /* Detect mobile breakpoint */
   useEffect(() => {
     const mq = window.matchMedia('(max-width: 768px)');
 
@@ -43,109 +42,164 @@ export const Layout = ({ header, sidebar, children }: LayoutProps) => {
     return () => mq.removeEventListener('change', update);
   }, []);
 
-  const toggleSidebar = () => setSidebarOpen(v => !v);
-
-  /* Auto-close drawer when leaving mobile */
   useEffect(() => {
     if (!isMobile) setSidebarOpen(false);
   }, [isMobile]);
 
+  const toggleSidebar = () => setSidebarOpen(v => !v);
+
   return (
-    <LayoutContext.Provider
-      value={{ isMobile, sidebarOpen, toggleSidebar }}
-    >
-      <StyledLayoutContainer hasHeader={!!header} hasSidebar={!!sidebar}>
-        {header && (
+    <LayoutContext.Provider value={{ isMobile, sidebarOpen, toggleSidebar }}>
+      <StyledLayoutContainer hasSidebar={!!sidebar}>
+
+        {/* DESKTOP HEADER */}
+        {!isMobile && header && (
           <StyledHeaderSlot>
             {header}
+          </StyledHeaderSlot>
+        )}
 
-            {/* Auto hamburger (only mobile + sidebar exists) */}
-            {isMobile && sidebar && (
+        {/* MOBILE HEADER (always full width bar) */}
+        {isMobile && (
+          <MobileHeader>
+            {sidebar && (
               <HamburgerButton onClick={toggleSidebar}>
                 ☰
               </HamburgerButton>
             )}
-          </StyledHeaderSlot>
+
+            <MobileHeaderContent>
+              {header}
+            </MobileHeaderContent>
+          </MobileHeader>
         )}
 
+        {/* SIDEBAR (drawer on mobile) */}
         {sidebar && (
           <StyledSidebarSlot data-open={sidebarOpen}>
             {sidebar}
           </StyledSidebarSlot>
         )}
 
-        <StyledMainContentArea>{children}</StyledMainContentArea>
+        {/* MAIN CONTENT */}
+        <StyledMainContentArea>
+          {children}
+        </StyledMainContentArea>
+
       </StyledLayoutContainer>
     </LayoutContext.Provider>
   );
 };
 
 /* =========================
-   STYLED COMPONENTS
+   GRID CONTAINER
    ========================= */
-
-export interface StyledLayoutContainerProps {
-  hasHeader: boolean;
-  hasSidebar: boolean;
-}
-
-export const StyledLayoutContainer = styled.div<StyledLayoutContainerProps>`
+export const StyledLayoutContainer = styled.div<{ hasSidebar: boolean }>`
   display: grid;
   height: 100vh;
   width: 100vw;
   overflow: hidden;
 
-  /* Desktop */
   grid-template-columns: ${p => (p.hasSidebar ? '300px 1fr' : '1fr')};
-  grid-template-rows: ${p => (p.hasHeader ? '100px 1fr' : '1fr')};
+  grid-template-rows: 100px 1fr;
 
-  grid-template-areas: ${p => {
-    if (p.hasHeader && p.hasSidebar) {
-      return `
+  grid-template-areas: ${p =>
+    p.hasSidebar
+      ? `
         "sidebar header"
         "sidebar main"
-      `;
-    }
-    if (p.hasHeader) return `"header" "main"`;
-    if (p.hasSidebar) return `"sidebar main"`;
-    return `"main"`;
-  }};
+      `
+      : `
+        "header"
+        "main"
+      `};
 
-  /* Tablet: collapsed rail */
   @media (max-width: 1200px) {
     grid-template-columns: ${p =>
       p.hasSidebar ? '100px 1fr' : '1fr'};
   }
 
-  /* Mobile: sidebar removed from grid (drawer mode) */
   @media (max-width: 768px) {
     grid-template-columns: 1fr;
-    grid-template-rows: ${p =>
-      p.hasHeader ? '100px 1fr' : '1fr'};
-
-    grid-template-areas: ${p =>
-      p.hasHeader ? `"header" "main"` : `"main"`};
+    grid-template-areas:
+      "header"
+      "main";
   }
 `;
 
+/* =========================
+   HEADER (DESKTOP)
+   ========================= */
 export const StyledHeaderSlot = styled.header`
   grid-area: header;
-  width: 100%; 
+
+  width: 100%;
+  height: 100%;
+
   display: flex;
   align-items: center;
+  box-sizing: border-box;
 
+  // make content fill up whole header slot
   & > * {
     flex: 1;
     min-width: 0;
+    width: 100%;
   }
 `;
 
+/* =========================
+   MOBILE HEADER
+   ========================= */
+export const MobileHeader = styled.div`
+  grid-area: header;
+
+  width: 100%;
+  height: 100%;
+
+  display: flex;
+  align-items: center;
+
+  padding: 0 12px;
+  box-sizing: border-box;
+
+  border-bottom: 1px solid #eee;
+`;
+
+export const MobileHeaderContent = styled.div`
+  flex: 1;
+  min-width: 0;
+
+  display: flex;
+  align-items: center;
+`;
+
+/* =========================
+   HAMBURGER
+   ========================= */
+export const HamburgerButton = styled.button`
+  width: 32px;
+  height: 32px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  font-size: 18px;
+
+  background: none;
+  border: none;
+  cursor: pointer;
+`;
+
+/* =========================
+   SIDEBAR
+   ========================= */
 export const StyledSidebarSlot = styled.aside`
   grid-area: sidebar;
   height: 100%;
   overflow: hidden;
 
-  /* Mobile drawer behavior */
   @media (max-width: 768px) {
     position: fixed;
     top: 0;
@@ -166,20 +220,11 @@ export const StyledSidebarSlot = styled.aside`
   }
 `;
 
+/* =========================
+   MAIN
+   ========================= */
 export const StyledMainContentArea = styled.main`
   grid-area: main;
   overflow-y: auto;
   position: relative;
-`;
-
-const HamburgerButton = styled.button`
-  margin-left: auto;
-  font-size: 20px;
-  background: none;
-  border: none;
-  cursor: pointer;
-
-  @media (min-width: 769px) {
-    display: none;
-  }
 `;
