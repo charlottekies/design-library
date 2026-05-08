@@ -9,12 +9,15 @@ export interface LayoutProps {
 }
 
 /* =========================
-   CONTEXT (optional)
+   CONTEXT
    ========================= */
+
 interface LayoutContextValue {
   isMobile: boolean;
   sidebarOpen: boolean;
   toggleSidebar: () => void;
+  openSidebar: () => void;
+  closeSidebar: () => void;
 }
 
 const LayoutContext = createContext<LayoutContextValue | null>(null);
@@ -28,6 +31,7 @@ export const useLayout = () => {
 /* =========================
    LAYOUT
    ========================= */
+
 export const Layout = ({ header, sidebar, children }: LayoutProps) => {
   const [isMobile, setIsMobile] = useState(false);
   const [sidebarOpen, setSidebarOpen] = useState(false);
@@ -42,14 +46,24 @@ export const Layout = ({ header, sidebar, children }: LayoutProps) => {
     return () => mq.removeEventListener('change', update);
   }, []);
 
+  const openSidebar = () => setSidebarOpen(true);
+  const closeSidebar = () => setSidebarOpen(false);
+  const toggleSidebar = () => setSidebarOpen(v => !v);
+
   useEffect(() => {
     if (!isMobile) setSidebarOpen(false);
   }, [isMobile]);
 
-  const toggleSidebar = () => setSidebarOpen(v => !v);
-
   return (
-    <LayoutContext.Provider value={{ isMobile, sidebarOpen, toggleSidebar }}>
+    <LayoutContext.Provider
+      value={{
+        isMobile,
+        sidebarOpen,
+        toggleSidebar,
+        openSidebar,
+        closeSidebar,
+      }}
+    >
       <StyledLayoutContainer hasSidebar={!!sidebar}>
 
         {/* DESKTOP HEADER */}
@@ -59,26 +73,18 @@ export const Layout = ({ header, sidebar, children }: LayoutProps) => {
           </StyledHeaderSlot>
         )}
 
-        {/* MOBILE HEADER (always full width bar) */}
-        {isMobile && (
-          <MobileHeader>
-            {sidebar && (
-              <HamburgerButton onClick={toggleSidebar}>
-                ☰
-              </HamburgerButton>
-            )}
-
-            <MobileHeaderContent>
-              {header}
-            </MobileHeaderContent>
-          </MobileHeader>
-        )}
-
-        {/* SIDEBAR (drawer on mobile) */}
+        {/* SIDEBAR */}
         {sidebar && (
           <StyledSidebarSlot data-open={sidebarOpen}>
             {sidebar}
           </StyledSidebarSlot>
+        )}
+
+        {/* MOBILE HEADER (no hamburger ownership here) */}
+        {isMobile && header && (
+          <MobileHeader>
+            {header}
+          </MobileHeader>
         )}
 
         {/* MAIN CONTENT */}
@@ -92,8 +98,9 @@ export const Layout = ({ header, sidebar, children }: LayoutProps) => {
 };
 
 /* =========================
-   GRID CONTAINER
+   LAYOUT GRID
    ========================= */
+
 export const StyledLayoutContainer = styled.div<{ hasSidebar: boolean }>`
   display: grid;
   height: 100vh;
@@ -130,6 +137,7 @@ export const StyledLayoutContainer = styled.div<{ hasSidebar: boolean }>`
 /* =========================
    HEADER (DESKTOP)
    ========================= */
+
 export const StyledHeaderSlot = styled.header`
   grid-area: header;
 
@@ -138,7 +146,7 @@ export const StyledHeaderSlot = styled.header`
 
   display: flex;
   align-items: center;
-  box-sizing: border-box;
+
 
   // make content fill up whole header slot
   & > * {
@@ -151,7 +159,8 @@ export const StyledHeaderSlot = styled.header`
 /* =========================
    MOBILE HEADER
    ========================= */
-export const MobileHeader = styled.div`
+
+export const MobileHeader = styled.header`
   grid-area: header;
 
   width: 100%;
@@ -160,41 +169,19 @@ export const MobileHeader = styled.div`
   display: flex;
   align-items: center;
 
-  padding: 0 12px;
-  box-sizing: border-box;
 
-  border-bottom: 1px solid #eee;
-`;
-
-export const MobileHeaderContent = styled.div`
-  flex: 1;
-  min-width: 0;
-
-  display: flex;
-  align-items: center;
+  // make content fill up whole header slot
+  & > * {
+    flex: 1;
+    min-width: 0;
+    width: 100%;
+  }
 `;
 
 /* =========================
-   HAMBURGER
+   SIDEBAR (DRAWER ON MOBILE)
    ========================= */
-export const HamburgerButton = styled.button`
-  width: 32px;
-  height: 32px;
 
-  display: flex;
-  align-items: center;
-  justify-content: center;
-
-  font-size: 18px;
-
-  background: none;
-  border: none;
-  cursor: pointer;
-`;
-
-/* =========================
-   SIDEBAR
-   ========================= */
 export const StyledSidebarSlot = styled.aside`
   grid-area: sidebar;
   height: 100%;
@@ -223,6 +210,7 @@ export const StyledSidebarSlot = styled.aside`
 /* =========================
    MAIN
    ========================= */
+
 export const StyledMainContentArea = styled.main`
   grid-area: main;
   overflow-y: auto;
