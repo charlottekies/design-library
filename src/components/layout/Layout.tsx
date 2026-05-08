@@ -110,45 +110,66 @@ export const StyledLayoutContainer = styled.div<{
   width: 100vw;
   overflow: hidden;
 
+  /* =========================
+     COLUMNS
+     ========================= */
   grid-template-columns: ${p =>
     p.hasSidebar ? '300px 1fr' : '1fr'};
 
-  /* 🔥 CRITICAL FIX: header row is now conditional */
-  grid-template-rows: ${p =>
-    p.hasHeader ? '100px 1fr' : '1fr'};
+  /* =========================
+     ROWS (ALWAYS FIXED)
+     IMPORTANT: do NOT make this conditional
+     ========================= */
+  grid-template-rows: 100px 1fr;
 
+  /* =========================
+     GRID AREAS
+     ========================= */
   grid-template-areas: ${p => {
-    if (p.hasHeader && p.hasSidebar) {
+    if (p.hasSidebar && p.hasHeader) {
       return `
-        "header header"
+        "sidebar header"
         "sidebar main"
       `;
     }
 
-    if (p.hasHeader && !p.hasSidebar) {
+    if (p.hasSidebar && !p.hasHeader) {
+      return `
+        "sidebar main"
+        "sidebar main"
+      `;
+    }
+
+    if (!p.hasSidebar && p.hasHeader) {
       return `
         "header"
         "main"
       `;
     }
 
-    if (!p.hasHeader && p.hasSidebar) {
-      return `
-        "sidebar main"
-      `;
-    }
-
-    return `"main"`;
+    return `
+      "main"
+      "main"
+    `;
   }};
 
+  /* =========================
+     TABLET (collapsed sidebar rail)
+     ========================= */
   @media (max-width: 1200px) {
     grid-template-columns: ${p =>
       p.hasSidebar ? '100px 1fr' : '1fr'};
   }
 
+  /* =========================
+     MOBILE (drawer behavior)
+     ========================= */
   @media (max-width: 768px) {
     grid-template-columns: 1fr;
-    grid-template-rows: 100px 1fr; // make room for a mobile header
+
+    /* IMPORTANT: keep structure stable */
+    grid-template-rows: 100px 1fr;
+
     grid-template-areas:
       "header"
       "main";
