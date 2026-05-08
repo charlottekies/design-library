@@ -6,11 +6,10 @@ export interface LayoutProps {
   sidebar?: ReactNode;
   children: ReactNode;
 }
+
 /**
- * 
- * @param header is a slot that spans the width of the Layout container
- * @param sidebar is a slot that is where your sidebar content will go
- * @returns 
+ * @param header spans top of layout
+ * @param sidebar left navigation slot
  */
 export const Layout = ({ header, sidebar, children }: LayoutProps) => {
   return (
@@ -34,6 +33,7 @@ export const StyledLayoutContainer = styled.div<StyledLayoutContainerProps>`
   width: 100vw;
   overflow: hidden;
 
+  /* Base desktop layout */
   grid-template-columns: ${props => (props.hasSidebar ? '300px 1fr' : '1fr')};
   grid-template-rows: ${props => (props.hasHeader ? '100px 1fr' : '1fr')};
 
@@ -44,35 +44,43 @@ export const StyledLayoutContainer = styled.div<StyledLayoutContainerProps>`
         "sidebar main"
       `;
     }
-    if (props.hasHeader && !props.hasSidebar) return `
+
+    if (props.hasHeader && !props.hasSidebar) {
+      return `
         "header"
         "main"
       `;
-    if (!props.hasHeader && props.hasSidebar) return `
+    }
+
+    if (!props.hasHeader && props.hasSidebar) {
+      return `
         "sidebar main"
       `;
+    }
+
     return `"main"`;
   }};
 
-  /* Tablet: collapsed sidebar rail */
+  /* Tablet: collapsed rail */
   @media (max-width: 1200px) {
     grid-template-columns: ${props =>
       props.hasSidebar ? '100px 1fr' : '1fr'};
   }
 
-  /* Mobile: sidebar removed from grid (drawer behavior assumed) */
+  /* Mobile: REMOVE sidebar from layout entirely */
   @media (max-width: 768px) {
     grid-template-columns: 1fr;
     grid-template-rows: ${props =>
       props.hasHeader ? '100px 1fr' : '1fr'};
 
     grid-template-areas: ${props =>
-      props.hasHeader
-        ? `
-          "header"
-          "main"
-        `
-        : `"main"`};
+      props.hasHeader ? `"header" "main"` : `"main"`};
+
+    /* 🔥 CRITICAL FIX:
+       Prevent orphan grid item behavior */
+    & > *:nth-of-type(2) {
+      grid-area: unset;
+    }
   }
 `;
 
@@ -81,10 +89,15 @@ export const StyledHeaderSlot = styled.header`
   z-index: 10;
 `;
 
-export const StyledSidebarSlot = styled.div`
+export const StyledSidebarSlot = styled.aside`
   grid-area: sidebar;
   height: 100%;
   overflow: hidden;
+
+  /* IMPORTANT FIX: Mobile must fully remove sidebar from grid flow */
+  @media (max-width: 768px) {
+    display: none;
+  }
 `;
 
 export const StyledMainContentArea = styled.main`
