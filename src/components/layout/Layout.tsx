@@ -258,34 +258,23 @@ export const Layout = ({
            SIDEBAR (DESKTOP)
            ========================= */}
 
-        {!isPhoneDevice && (
-          <StyledSidebarArea
-            isVisible={variant !== 'collapsed' || !!rail}
-          >
-            {variant !== 'collapsed' && (
-              <SidebarToggleButton onClick={toggleSidebar}>
-                {menuIcon}
-              </SidebarToggleButton>
-            )}
+       {!isPhoneDevice && (sidebar || rail) && (
+  <StyledSidebarArea
+    isVisible={variant !== 'collapsed' || !!rail}
+  >
+    {/* Toggle ONLY if sidebar exists (rail alone cannot expand) */}
+    {sidebar && (
+      <SidebarToggleButton onClick={toggleSidebar}>
+        {menuIcon}
+      </SidebarToggleButton>
+    )}
 
-            {variant === 'rail' && rail && rail}
+    {/* Render based on variant */}
+    {variant === 'rail' && rail && rail}
 
-            {variant === 'full' && sidebar && sidebar}
-          </StyledSidebarArea>
-        )}
-
-        {/* Has a rail and has a drawer and is mobile drawer should not exist, make rail show up and when toggle buton tapped, open sidebar */}
-        {!isPhoneDevice && isMobileViewport && hasRail && rail && (
-          <StyledSidebarArea isVisible={true}>
-            <RailToggleWrapper>
-              <SidebarToggleButton onClick={toggleSidebar}>
-                {menuIcon}
-              </SidebarToggleButton>
-            </RailToggleWrapper>
-
-            {rail}
-          </StyledSidebarArea>
-        )}
+    {variant === 'full' && sidebar && sidebar}
+  </StyledSidebarArea>
+)}
 
         {/* =========================
            MOBILE DRAWER
