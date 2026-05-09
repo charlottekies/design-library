@@ -1,5 +1,6 @@
 import type { Meta, StoryObj } from '@storybook/react';
 import { Layout } from './Layout';
+import { color } from '../../tokens/semantic-color';
 
 const metadata: Meta<typeof Layout> = {
   title: 'Components/Layout',
@@ -24,15 +25,15 @@ type Story = StoryObj<typeof Layout>;
 /* ------------------------------------
  * Placeholder
  * ------------------------------------ */
-const Placeholder = ({ label, color }: { label: string; color: string }) => (
+const Placeholder = ({ label, backgroundColor, fontColor }: { label: string; backgroundColor: string, fontColor: string }) => (
   <div
     style={{
-      backgroundColor: color,
+      backgroundColor: backgroundColor,
       height: '100%',
       display: 'flex',
-      alignItems: 'center',
-      justifyContent: 'center',
-      color: 'white',
+      alignItems: 'top',
+      justifyContent: 'top',
+      color: fontColor,
       fontWeight: 'bold',
     }}
   >
@@ -45,9 +46,9 @@ const Placeholder = ({ label, color }: { label: string; color: string }) => (
  * ------------------------------------ */
 export const Default: Story = {
   args: {
-    header: <Placeholder label="Header" color="#2c3e50" />,
-    sidebar: <Placeholder label="Sidebar" color="#34495e" />,
-    children: <Placeholder label="Main Content" color="#ecf0f1" />,
+    header: <Placeholder label="Header" backgroundColor={color.surface.default} fontColor={color.text.primary.default} />,
+    sidebar: <Placeholder label="Sidebar" backgroundColor={color.surface.default} fontColor={color.text.primary.default}/>,
+    children: <Placeholder label="Main Content" backgroundColor={color.surface.secondary} fontColor={color.text.primary.default}/>,
   },
   parameters: {
     viewport: {
@@ -61,10 +62,10 @@ export const Default: Story = {
  * ------------------------------------ */
 export const WithRail: Story = {
   args: {
-    header: <Placeholder label="Header" color="#2c3e50" />,
-    sidebar: <Placeholder label="Sidebar" color="#34495e" />,
-    rail: <Placeholder label="Rail" color ="#34495e" />,
-    children: <Placeholder label="Main Content" color="#ecf0f1" />,
+    header: <Placeholder label="Header" backgroundColor={color.surface.default} fontColor={color.text.primary.default} />,
+    sidebar: <Placeholder label="Sidebar" backgroundColor={color.surface.default} fontColor={color.text.primary.default}/>,
+    rail: <Placeholder label="Rail" backgroundColor={color.surface.default} fontColor={color.text.primary.default}/>,
+    children: <Placeholder label="Main Content" backgroundColor={color.surface.secondary} fontColor={color.text.primary.default}/>,
   },
   parameters: {
     viewport: {
@@ -78,10 +79,8 @@ export const WithRail: Story = {
  * ------------------------------------ */
 export const NoHeader: Story = {
   args: {
-    sidebar: <Placeholder label="Sidebar Drawer" color="#34495e" />,
-    children: (
-      <Placeholder label="Main Content (No Header)" color="#ecf0f1" />
-    ),
+    sidebar: <Placeholder label="Sidebar" backgroundColor={color.surface.default} fontColor={color.text.primary.default}/>,
+    children: <Placeholder label="Main Content" backgroundColor={color.surface.secondary} fontColor={color.text.primary.default}/>,
   },
   parameters: {
     viewport: {
@@ -95,10 +94,8 @@ export const NoHeader: Story = {
  * ------------------------------------ */
 export const NoSidebar: Story = {
   args: {
-    header: <Placeholder label="Header" color="#2c3e50" />,
-    children: (
-      <Placeholder label="Main Content (No Header)" color="#ecf0f1" />
-    ),
+    header: <Placeholder label="Header" backgroundColor={color.surface.default} fontColor={color.text.primary.default} />,
+    children: <Placeholder label="Main Content" backgroundColor={color.surface.secondary} fontColor={color.text.primary.default}/>,
   },
   parameters: {
     viewport: {
@@ -109,11 +106,9 @@ export const NoSidebar: Story = {
 
 export const NoSidebarWithRail: Story = {
   args: {
-    header: <Placeholder label="Header" color="#2c3e50" />,
-    rail: <Placeholder label="Rail" color ="#34495e" />,
-    children: (
-      <Placeholder label="Main Content (No Header)" color="#ecf0f1" />
-    ),
+    header: <Placeholder label="Header" backgroundColor={color.surface.default} fontColor={color.text.primary.default} />,
+    rail: <Placeholder label="Rail" backgroundColor={color.surface.default} fontColor={color.text.primary.default}/>,
+    children: <Placeholder label="Main Content" backgroundColor={color.surface.secondary} fontColor={color.text.primary.default}/>,
   },
   parameters: {
     viewport: {
@@ -127,8 +122,8 @@ export const NoSidebarWithRail: Story = {
  * ------------------------------------ */
 export const CustomMenuIcon: Story = {
   args: {
-    header: <Placeholder label="Header" color="#2c3e50" />,
-    sidebar: <Placeholder label="Sidebar Drawer" color="#34495e" />,
+    header: <Placeholder label="Header" backgroundColor={color.surface.default} fontColor={color.text.primary.default} />,
+    sidebar: <Placeholder label="Sidebar" backgroundColor={color.surface.default} fontColor={color.text.primary.default}/>,
     icons: {
       menu: (
         <span style={{ fontSize: 20 }}>
@@ -136,7 +131,7 @@ export const CustomMenuIcon: Story = {
         </span>
       ),
     },
-    children: <Placeholder label="Main Content" color="#ecf0f1" />,
+    children: <Placeholder label="Main Content" backgroundColor={color.surface.secondary} fontColor={color.text.primary.default}/>,
   },
   parameters: {
     viewport: {
