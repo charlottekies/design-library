@@ -94,57 +94,34 @@ export const Layout = ({
 
       setIsMobileViewport(isSmallViewport);
       setIsPhoneDevice(isRealPhone);
-      console.log(hasRail)
 
       if (isSmallViewport && hasRail) {
-        console.log('setting variant to rail')
-
         setVariant('rail');
       }
       if (!isSmallViewport && hasRail && hasSidebar) {
-        console.log('setting variant to full')
-
         setVariant('full');
       }
 
       if (!isSmallViewport && hasRail && !hasSidebar) {
-        console.log('setting variant to rail')
         setVariant('rail');
       }
       if (isSmallViewport && hasRail && !hasSidebar) {
-        console.log('setting variant to rail')
-
         setVariant('rail');
       }
-
-
 
       // auto collapse on smaller screens
       setVariant((prev) => {
 
         if (isSmallViewport) {
-          console.log(`prev is ${prev}`)
-
           return prev === 'full'
             ? 'collapsed'
             : prev;
         }
-        console.log(`prev is ${prev}`)
 
         return prev === 'collapsed'
           ? 'full'
           : prev;
       });
-
-      console.log({
-        isSmallViewport,
-        isCoarsePointer,
-        isPhoneWidth,
-        isRealPhone,
-        variant
-      });
-
-
     };
 
     update();
