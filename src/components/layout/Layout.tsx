@@ -167,15 +167,13 @@ export const Layout = ({
      - ALWAYS in mobile header
      - Desktop only when collapsed + no rail
      ========================= */
-  const showHeaderToggle =
-    hasSidebar &&
-    (
-      shouldRenderDefaultPhoneHeader ||
-      (
-        (hasHeader &&
-        sidebarIsCollapsed)
-      )
-    );
+ const showHeaderToggle =
+  hasSidebar &&
+  !hasRail &&
+  (
+    shouldRenderDefaultPhoneHeader ||
+    (hasHeader && sidebarIsCollapsed)
+  );
 
   /* =========================
      MAIN CONTENT TOGGLE RULE
@@ -241,10 +239,16 @@ export const Layout = ({
 
         {/* Has a rail and has a drawer and is mobile drawer should not exist, make rail show up and when toggle buton tapped, open sidebar */}
         {isMobileViewport && hasRail && rail && (
-          <StyledSidebarArea isVisible={true}>
-            {rail}
-          </StyledSidebarArea>
-        )}
+        <StyledSidebarArea isVisible={true}>
+          <RailToggleWrapper>
+            <SidebarToggleButton onClick={toggleSidebar}>
+              {menuIcon}
+            </SidebarToggleButton>
+          </RailToggleWrapper>
+
+          {rail}
+        </StyledSidebarArea>
+)}
 
         {/* =========================
            MOBILE DRAWER
@@ -485,6 +489,13 @@ const SidebarToggleButton = styled.button`
   background: transparent;
   border: none;
   cursor: pointer;
+`;
+
+const RailToggleWrapper = styled.div`
+  display: flex;
+  align-items: center;
+  padding: 0px 12px 0 12px;
+  z-index: 50;
 `;
 
 const MainContentToggle = styled.button`
