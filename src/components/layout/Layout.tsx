@@ -521,12 +521,6 @@ const SidebarToggleButton = styled.button`
   cursor: pointer;
 `;
 
-const RailToggleWrapper = styled.div`
-  display: flex;
-  align-items: center;
-  padding: 0px 12px 0 12px;
-  z-index: 50;
-`;
 
 const MainContentToggle = styled.button`
   position: absolute;
