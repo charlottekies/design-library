@@ -258,23 +258,23 @@ export const Layout = ({
            SIDEBAR (DESKTOP)
            ========================= */}
 
-       {!isPhoneDevice && (sidebar || rail) && (
-  <StyledSidebarArea
-    isVisible={variant !== 'collapsed' || !!rail}
-  >
-    {/* Toggle ONLY if sidebar exists (rail alone cannot expand) */}
-    {sidebar && (
-      <SidebarToggleButton onClick={toggleSidebar}>
-        {menuIcon}
-      </SidebarToggleButton>
-    )}
+        {!isPhoneDevice && (sidebar || rail) && (
+          <StyledSidebarArea
+            isVisible={variant !== 'collapsed' || !!rail}
+          >
+            {/* Toggle ONLY if sidebar exists (rail alone cannot expand) */}
+            {sidebar && (
+              <SidebarToggleButton onClick={toggleSidebar}>
+                {menuIcon}
+              </SidebarToggleButton>
+            )}
 
-    {/* Render based on variant */}
-    {variant === 'rail' && rail && rail}
+            {/* Render based on variant */}
+            {variant === 'rail' && rail && rail}
 
-    {variant === 'full' && sidebar && sidebar}
-  </StyledSidebarArea>
-)}
+            {variant === 'full' && sidebar && sidebar}
+          </StyledSidebarArea>
+        )}
 
         {/* =========================
            MOBILE DRAWER
