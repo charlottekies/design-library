@@ -1,7 +1,7 @@
 // TODO: replace these 
 export const raw = {
     white: "#ffffff",
-    eggshell: "#FFFBF2",
+    eggshell: "#fff7e7",
    
     gray100: "#F9FAFB",
     gray200: "#D1D1D1",

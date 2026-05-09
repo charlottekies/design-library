@@ -241,13 +241,6 @@ export const Layout = ({
           <StyledSidebarArea
             isVisible={variant !== 'collapsed' || !!rail}
           >
-            {/* Toggle ONLY if sidebar exists (rail alone cannot expand) */}
-            {sidebar && (
-              <StyledSidebarToggleButton onClick={toggleSidebar}>
-                {menuIcon}
-              </StyledSidebarToggleButton>
-            )}
-
             {/* Render based on variant */}
             {variant === 'rail' && rail && rail}
 
@@ -276,14 +269,7 @@ export const Layout = ({
                   variant === 'full'
                 }
               >
-                <StyledSidebarToggleButton
-                  onClick={
-                    toggleSidebar
-                  }
-                >
-                  {menuIcon}
-                </StyledSidebarToggleButton>
-                  { sidebar ? sidebar : rail }
+                { sidebar ? sidebar : rail }
               </StyledMobileDrawer>
             </>
           )}
