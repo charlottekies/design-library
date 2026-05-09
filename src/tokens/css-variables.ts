@@ -3,7 +3,7 @@ import { raw } from "./raw";
 export const cssVariables = `
 :root {
   --color-surface-default: ${raw.gray100};
-  --color-surfuace-secondary: ${raw.eggshell};
+  --color-surface-secondary: ${raw.eggshell};
 
   
   --color-text-primary: ${raw.gray500};
