@@ -95,11 +95,19 @@ export const Layout = ({
     setIsMobileViewport(isSmallViewport);
     setIsPhoneDevice(isRealPhone);
 
+    if (isSmallViewport && hasRail) {
+      setVariant('rail');
+    }
+    if (!isSmallViewport && hasRail) {
+      setVariant('full');
+    }
+
     console.log({
       isSmallViewport,
       isCoarsePointer,
       isPhoneWidth,
       isRealPhone,
+      variant
     });
 
     // auto collapse on smaller screens
