@@ -169,7 +169,8 @@ export const Layout = ({
   /* =========================
      DERIVED STATE
      ========================= */
-  const menuIcon =
+//  TODO: Replace with custom icon from icons
+     const menuIcon =
     icons?.menu ?? <span>☰</span>;
 
   const hasSidebar = !!sidebar;
@@ -236,7 +237,6 @@ export const Layout = ({
         {/* =========================
            SIDEBAR (DESKTOP)
            ========================= */}
-
         {!isPhoneDevice && (sidebar || rail) && (
           <StyledSidebarArea
             isVisible={variant !== 'collapsed' || !!rail}
