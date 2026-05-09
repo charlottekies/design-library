@@ -421,8 +421,12 @@ const StyledLayoutContainer = styled.div<{
     }
 
     // phone header
-    if (p.isPhoneDevice) {
+    if (p.isPhoneDevice && !p.hasHeader) {
       return '50px 1fr';
+    }
+
+    if (p.isPhoneDevice && p.hasHeader) {
+      return '80px 1fr';
     }
 
     // desktop / resized browser
