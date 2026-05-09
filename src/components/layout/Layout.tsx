@@ -521,7 +521,6 @@ const SidebarToggleButton = styled.button`
   cursor: pointer;
 `;
 
-
 const MainContentToggle = styled.button`
   position: absolute;
   top: 20px;
