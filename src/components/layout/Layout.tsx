@@ -264,9 +264,9 @@ export const Layout = ({
           >
             {/* Toggle ONLY if sidebar exists (rail alone cannot expand) */}
             {sidebar && (
-              <SidebarToggleButton onClick={toggleSidebar}>
+              <StyledSidebarToggleButton onClick={toggleSidebar}>
                 {menuIcon}
-              </SidebarToggleButton>
+              </StyledSidebarToggleButton>
             )}
 
             {/* Render based on variant */}
@@ -282,7 +282,7 @@ export const Layout = ({
         {isPhoneDevice &&
           (hasSidebar || hasRail) && (
             <>
-              <MobileDrawerOverlay
+              <StyledMobileDrawerOverlay
                 active={
                   variant === 'full'
                 }
@@ -297,13 +297,13 @@ export const Layout = ({
                   variant === 'full'
                 }
               >
-                <SidebarToggleButton
+                <StyledSidebarToggleButton
                   onClick={
                     toggleSidebar
                   }
                 >
                   {menuIcon}
-                </SidebarToggleButton>
+                </StyledSidebarToggleButton>
                   { sidebar ? sidebar : rail }
               </StyledMobileDrawer>
             </>
@@ -319,7 +319,7 @@ export const Layout = ({
                 shouldRenderDefaultPhoneHeader
               }
             >
-              <HeaderContentSlot
+              <StyledHeaderContentSlot
                 $hasToggle={
                   showHeaderToggle
                 }
@@ -329,16 +329,16 @@ export const Layout = ({
                 ) : (
                   <></>
                 )}
-              </HeaderContentSlot>
+              </StyledHeaderContentSlot>
 
               {showHeaderToggle && (
-                <HeaderToggleButton
+                <StyledHeaderToggleButton
                   onClick={
                     toggleSidebar
                   }
                 >
                   {menuIcon}
-                </HeaderToggleButton>
+                </StyledHeaderToggleButton>
               )}
             </StyledHeaderArea>
           )}
@@ -348,13 +348,13 @@ export const Layout = ({
            ========================= */}
         <StyledMainContentArea>
           {showMainContentToggle && (
-            <MainContentToggle
+            <StyledMainContentToggle
               onClick={
                 toggleSidebar
               }
             >
               {menuIcon}
-            </MainContentToggle>
+            </StyledMainContentToggle>
           )}
 
           {children}
@@ -365,7 +365,7 @@ export const Layout = ({
 };
 
 /* =========================
-   STYLES
+   STYLED COMPONENTS
    ========================= */
 
 const SIDEBAR_BG = '#f9f9f9';
@@ -483,7 +483,7 @@ const StyledHeaderArea = styled.header<{
   border-bottom: 1px solid #eee;
 `;
 
-const HeaderContentSlot = styled.div<{
+const StyledHeaderContentSlot = styled.div<{
   $hasToggle: boolean;
 }>`
   flex: 1;
@@ -502,7 +502,7 @@ const HeaderContentSlot = styled.div<{
   }
 `;
 
-const HeaderToggleButton = styled.button`
+const StyledHeaderToggleButton = styled.button`
   position: absolute;
   left: 0;
   top: 0;
@@ -514,7 +514,7 @@ const HeaderToggleButton = styled.button`
   cursor: pointer;
 `;
 
-const SidebarToggleButton = styled.button`
+const StyledSidebarToggleButton = styled.button`
   position: absolute;
   top: 20px;
   right: 12px;
@@ -524,7 +524,7 @@ const SidebarToggleButton = styled.button`
   cursor: pointer;
 `;
 
-const MainContentToggle = styled.button`
+const StyledMainContentToggle = styled.button`
   position: absolute;
   top: 20px;
   left: 20px;
@@ -567,7 +567,7 @@ const StyledMobileDrawer = styled.aside<{
   }
 `;
 
-const MobileDrawerOverlay = styled.div<{
+const StyledMobileDrawerOverlay = styled.div<{
   active: boolean;
 }>`
   display: ${(p) =>
