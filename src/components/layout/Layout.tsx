@@ -148,6 +148,7 @@ export const Layout = ({
 
   const hasSidebar = !!sidebar;
   const hasHeader = !!header;
+  const hasRail = !!rail;
 
   const sidebarIsCollapsed =
     variant === 'collapsed';
@@ -171,9 +172,8 @@ export const Layout = ({
     (
       shouldRenderDefaultPhoneHeader ||
       (
-        hasHeader &&
-        sidebarIsCollapsed &&
-        !rail
+        (hasHeader &&
+        sidebarIsCollapsed)
       )
     );
 
@@ -206,7 +206,7 @@ export const Layout = ({
           shouldRenderDefaultPhoneHeader
         }
         hasSidebar={hasSidebar}
-        hasRail={!!rail}
+        hasRail={hasRail}
       >
         {/* =========================
            SIDEBAR (DESKTOP)
@@ -238,6 +238,9 @@ export const Layout = ({
                   : null}
             </StyledSidebarArea>
           )}
+
+        {/* Has a rail and has a drawer and is mobile drawer should not exist, make rail show up and when toggle buton tapped, open sidebar */}
+        
 
         {/* =========================
            MOBILE DRAWER
@@ -348,7 +351,13 @@ const StyledLayoutContainer = styled.div<{
   height: 100vh;
 
   grid-template-columns: ${(p) => {
-    if (p.isMobileViewport) return '1fr';
+    if (p.isMobileViewport && p.hasRail) {
+      console.log("hi")
+      return  '100px 1fr';
+    } 
+    
+    if (p.isMobileViewport && !p.hasRail) return '1fr'; 
+    
     if (
       !p.hasSidebar ||
       (p.variant === 'collapsed' &&
