@@ -7,6 +7,8 @@ import {
   useState,
 } from 'react';
 import { color } from '../../tokens/semantic-color';
+import { space } from '../../tokens/space';
+
 
 /* =========================
    TYPES & CONTEXT
@@ -345,7 +347,7 @@ export const Layout = ({
    STYLED COMPONENTS
    ========================= */
 
-const SIDEBAR_BG = '#f9f9f9';
+
 const StyledLayoutContainer = styled.div<{
   variant: SidebarVariant;
   isPhoneDevice: boolean;
@@ -451,13 +453,13 @@ const StyledHeaderArea = styled.header<{
   height: 100%;
   background: ${(p) =>
     p.$isDefaultMobile
-      ? color.primary.default
+      ? color.surface.default
       : 'transparent'};
   color: ${(p) =>
     p.$isDefaultMobile
       ? '#fff'
       : 'inherit'};
-  border-bottom: 1px solid #eee;
+  border-bottom: 1px solid ${color.border.primary};
 `;
 
 const StyledHeaderContentSlot = styled.div<{
@@ -493,8 +495,8 @@ const StyledHeaderToggleButton = styled.button`
 
 const StyledSidebarToggleButton = styled.button`
   position: absolute;
-  top: 20px;
-  right: 12px;
+  top: ${space.space08};
+  right: ${space.space07};
   z-index: 40;
   background: transparent;
   border: none;
@@ -503,8 +505,8 @@ const StyledSidebarToggleButton = styled.button`
 
 const StyledMainContentToggle = styled.button`
   position: absolute;
-  top: 20px;
-  left: 20px;
+  top: ${space.space08};
+  left: ${space.space08};
   z-index: 50;
 `;
 
@@ -517,7 +519,6 @@ const StyledSidebarArea = styled.aside<{
   flex-direction: column;
   overflow: hidden;
   height: 100vh;
-  background: ${SIDEBAR_BG};
 `;
 
 const StyledMainContentArea = styled.main`

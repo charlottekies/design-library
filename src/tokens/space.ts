@@ -1,4 +1,3 @@
-
 /**
  * Spaces should be used for padding, margin, and gaps, and not for width and height dimensions
  */
@@ -14,4 +13,7 @@ export const space = {
     space09: "32px",
     space10: "36px",
     space11: "40px",
-};
+} as const;
+
+export type SpaceKey = keyof typeof space;
+export type SpaceValue = typeof space[SpaceKey];
