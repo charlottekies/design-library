@@ -1,0 +1,63 @@
+import type { ReactNode } from 'react';
+import styled from '@emotion/styled';
+import { color } from '../../tokens/semantic-color';
+import { space } from '../../tokens/space';
+
+
+interface SidebarProps {
+  header?: ReactNode;
+  footer?: ReactNode;
+  children: ReactNode; // This becomes the "Main/Nav" section
+}
+
+/* Main Component */
+
+/** 
+ * A Sidebar with optional header and footer content areas 
+*/
+export const Sidebar = ({ header, footer, children }: SidebarProps) => {
+  return (
+    <StyledSidebarContainer>
+      {header && 
+        <StyledSidebarHeader>
+            {header}
+        </StyledSidebarHeader>}
+      
+      <StyledSidebarNav>
+        {children}
+      </StyledSidebarNav>
+      
+      {footer && 
+        <StyledSidebarFooter>
+            {footer}
+        </StyledSidebarFooter>}
+    </StyledSidebarContainer>
+  );
+};
+
+/* Styled Components */
+const StyledSidebarContainer = styled.aside`
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  background-color: ${color.surface.default};
+  border-right: ${space.space02} solid ${color.border.primary};
+`;
+
+const StyledSidebarHeader = styled.div`
+  padding: 1rem;
+  flex-shrink: 0;
+  border-bottom: ${space.space02} solid ${color.border.primary};
+`;
+
+export const StyledSidebarNav = styled.nav`
+  flex: 1;
+  overflow-y: auto;
+  padding: 1rem;
+`;
+
+export const StyledSidebarFooter = styled.div`
+  padding: 1rem;
+  flex-shrink: 0;
+  border-top: ${space.space02} solid ${color.border.primary};
+`;
