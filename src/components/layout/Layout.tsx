@@ -479,16 +479,6 @@ const StyledHeaderToggleButton = styled.button`
   cursor: pointer;
 `;
 
-const StyledSidebarToggleButton = styled.button`
-  position: absolute;
-  top: ${space.space08};
-  right: ${space.space07};
-  z-index: 40;
-  background: transparent;
-  border: none;
-  cursor: pointer;
-`;
-
 const StyledMainContentToggle = styled.button`
   position: absolute;
   top: ${space.space08};
