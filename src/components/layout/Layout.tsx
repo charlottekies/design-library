@@ -27,7 +27,7 @@ export interface LayoutProps {
 
 interface LayoutContextValue {
   variant: SidebarVariant;
-  isMobile: boolean;
+  isMobileViewport: boolean;
   toggleSidebar: () => void;
 }
 
@@ -192,7 +192,7 @@ export const Layout = ({
     <LayoutContext.Provider
       value={{
         variant,
-        isMobile:
+        isMobileViewport:
           isMobileViewport,
         toggleSidebar,
       }}
@@ -200,7 +200,7 @@ export const Layout = ({
       <StyledLayoutContainer
         variant={variant}
         isPhoneDevice={isPhoneDevice}
-        isMobile={isMobileViewport}
+        isMobileViewport={isMobileViewport}
         hasHeader={
           hasHeader ||
           shouldRenderDefaultPhoneHeader
@@ -338,7 +338,7 @@ const SIDEBAR_BG = '#f9f9f9';
 const StyledLayoutContainer = styled.div<{
   variant: SidebarVariant;
   isPhoneDevice: boolean;
-  isMobile: boolean;
+  isMobileViewport: boolean;
   hasHeader: boolean;
   hasSidebar: boolean;
   hasRail: boolean;
@@ -348,7 +348,7 @@ const StyledLayoutContainer = styled.div<{
   height: 100vh;
 
   grid-template-columns: ${(p) => {
-    if (p.isMobile) return '1fr';
+    if (p.isMobileViewport) return '1fr';
     if (
       !p.hasSidebar ||
       (p.variant === 'collapsed' &&
@@ -406,6 +406,8 @@ const HeaderContentSlot = styled.div<{
   width: 100%;
   height: 100%;
   overflow: hidden;
+      padding-right: ${(p) =>
+    p.$hasToggle ? '60px' : '0'};
 
   & > * {
     display: flex;
@@ -443,11 +445,6 @@ const MainContentToggle = styled.button`
   top: 20px;
   left: 20px;
   z-index: 50;
-`;
-
-const DefaultMobileTitle = styled.span`
-  font-weight: 600;
-  font-size: 1.2rem;
 `;
 
 const StyledSidebarArea = styled.aside<{
