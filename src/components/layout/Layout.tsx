@@ -71,74 +71,90 @@ export const Layout = ({
      MEDIA / DEVICE DETECTION
      ========================= */
   useEffect(() => {
-    const mq = window.matchMedia(
-      `(max-width: ${MOBILE_BREAKPOINT}px)`
-    );
+  const mq = window.matchMedia(
+    `(max-width: ${MOBILE_BREAKPOINT}px)`
+  );
 
-    const update = () => {
-      const isSmallViewport = mq.matches;
+  const update = () => {
+    const isSmallViewport = mq.matches;
 
-      const isTouchDevice =
-        'ontouchstart' in window ||
-        navigator.maxTouchPoints > 0;
+    // coarse pointer = finger device
+    const isCoarsePointer =
+      window.matchMedia('(pointer: coarse)')
+        .matches;
 
-      const isPhoneUA =
-        /Android|iPhone|iPod/i.test(
-          navigator.userAgent
-        );
+    // phone-ish width
+    const isPhoneWidth =
+      window.innerWidth <= 768;
 
-      const isRealPhone =
-        isSmallViewport &&
-        isTouchDevice &&
-        isPhoneUA;
+    // true phone
+    const isRealPhone =
+      isPhoneWidth &&
+      isCoarsePointer;
 
-      setIsMobileViewport(isSmallViewport);
-      setIsPhoneDevice(isRealPhone);
+    setIsMobileViewport(isSmallViewport);
+    setIsPhoneDevice(isRealPhone);
 
-      // auto-collapse on small screens
-      setVariant((prev) => {
-        if (isSmallViewport) {
-          return prev === 'full'
-            ? 'collapsed'
-            : prev;
-        }
+    console.log({
+      isSmallViewport,
+      isCoarsePointer,
+      isPhoneWidth,
+      isRealPhone,
+    });
 
-        return prev === 'collapsed'
-          ? 'full'
+    // auto collapse on smaller screens
+    setVariant((prev) => {
+      if (isSmallViewport) {
+        return prev === 'full'
+          ? 'collapsed'
           : prev;
-      });
-    };
+      }
 
-    update();
-    mq.addEventListener('change', update);
+      return prev === 'collapsed'
+        ? 'full'
+        : prev;
+    });
+  };
 
-    return () =>
-      mq.removeEventListener(
-        'change',
-        update
-      );
-  }, []);
+  update();
+
+  mq.addEventListener('change', update);
+  window.addEventListener('resize', update);
+
+  return () => {
+    mq.removeEventListener(
+      'change',
+      update
+    );
+    window.removeEventListener(
+      'resize',
+      update
+    );
+  };
+}, []);
 
   /* =========================
      TOGGLE LOGIC
      ========================= */
-  const toggleSidebar = () => {
-    setVariant((prev) => {
-      if (isMobileViewport) {
-        return prev === 'full'
-          ? 'collapsed'
-          : 'full';
-      }
+const toggleSidebar = () => {
+  setVariant((prev) => {
+    // REAL PHONE → drawer open/close
+    if (isPhoneDevice) {
+      return prev === 'full'
+        ? 'collapsed'
+        : 'full';
+    }
 
-      if (prev === 'full') {
-        return rail
-          ? 'rail'
-          : 'collapsed';
-      }
+    // DESKTOP / RESIZED WINDOW
+    if (prev === 'full') {
+      return rail
+        ? 'rail'
+        : 'collapsed';
+    }
 
-      return 'full';
-    });
-  };
+    return 'full';
+  });
+};
 
   /* =========================
      DERIVED STATE
@@ -168,8 +184,8 @@ export const Layout = ({
      - Desktop only when collapsed + no rail
      ========================= */
  const showHeaderToggle =
-  hasSidebar &&
-  !hasRail &&
+  (hasSidebar ||
+   hasRail) &&
   (
     shouldRenderDefaultPhoneHeader ||
     (hasHeader && sidebarIsCollapsed)
@@ -209,7 +225,7 @@ export const Layout = ({
         {/* =========================
            SIDEBAR (DESKTOP)
            ========================= */}
-        {!isMobileViewport &&
+        {!isPhoneDevice &&
           hasSidebar && (
             <StyledSidebarArea
               isVisible={
@@ -238,7 +254,7 @@ export const Layout = ({
           )}
 
         {/* Has a rail and has a drawer and is mobile drawer should not exist, make rail show up and when toggle buton tapped, open sidebar */}
-        {isMobileViewport && hasRail && rail && (
+        {!isPhoneDevice && isMobileViewport && hasRail && rail && (
         <StyledSidebarArea isVisible={true}>
           <RailToggleWrapper>
             <SidebarToggleButton onClick={toggleSidebar}>
@@ -253,8 +269,8 @@ export const Layout = ({
         {/* =========================
            MOBILE DRAWER
            ========================= */}
-        {isMobileViewport &&
-          hasSidebar && (
+        {isPhoneDevice &&
+          (hasSidebar  || hasRail) && (
             <>
               <MobileDrawerOverlay
                 active={
@@ -266,7 +282,6 @@ export const Layout = ({
                   )
                 }
               />
-
               <StyledMobileDrawer
                 data-open={
                   variant === 'full'
@@ -345,7 +360,6 @@ export const Layout = ({
    ========================= */
 
 const SIDEBAR_BG = '#f9f9f9';
-
 const StyledLayoutContainer = styled.div<{
   variant: SidebarVariant;
   isPhoneDevice: boolean;
@@ -358,77 +372,85 @@ const StyledLayoutContainer = styled.div<{
   width: 100vw;
   height: 100vh;
 
+  /* =========================
+     GRID COLUMNS
+     ========================= */
   grid-template-columns: ${(p) => {
-    if (p.isMobileViewport && p.hasRail) {
-      console.log("hi")
-      return  '100px 1fr';
-    } 
-    
-    if (p.isMobileViewport && !p.hasRail) return '1fr'; 
-    
+    // REAL PHONE
+    // Sidebar becomes drawer
+    if (p.isPhoneDevice) {
+      return '1fr'
+    }
+
+    // DESKTOP / RESIZED WINDOW
+
+    // no sidebar visible
     if (
       !p.hasSidebar ||
       (p.variant === 'collapsed' &&
         !p.hasRail)
-    )
+    ) {
       return '0px 1fr';
-    return p.variant === 'rail'
-      ? '100px 1fr'
-      : '300px 1fr';
+    }
+
+    // rail mode
+    if (p.variant === 'rail') {
+      return '100px 1fr';
+    }
+
+    // full sidebar
+    return '300px 1fr';
   }};
 
+  /* =========================
+     GRID ROWS
+     ========================= */
   grid-template-rows: ${(p) => {
-    if (!p.hasHeader) return '1fr';
-      return p.isPhoneDevice ? '50px 1fr' : '80px 1fr';
-    }};
-  
+    // no provided header
+    // AND no default phone header
+    if (!p.hasHeader) {
+      return '1fr';
+    }
 
+    // phone header
+    if (p.isPhoneDevice) {
+      return '50px 1fr';
+    }
+
+    // desktop / resized browser
+    return '80px 1fr';
+  }};
+
+  /* =========================
+     GRID AREAS
+     ========================= */
   grid-template-areas: ${(p) => {
-  if (p.isMobileViewport) {
+    // REAL PHONE
+    // sidebar is drawer-only
+    
+    if (p.isPhoneDevice) {
+      
+      return p.hasHeader
+        ? `
+          "header"
+          "main"
+        `
+        : `
+          "header"
+          "main"
+        `;
+    }
+
+    // DESKTOP / RESIZED WINDOW
     return p.hasHeader
-      ? '"header" "main"'
-      : '"main"';
-  }
-
-  return p.hasHeader
-    ? '"sidebar header" "sidebar main"'
-    : '"sidebar main"';
-}};
-
-  @media (max-width: 768px) {
-  grid-template-columns: ${(p) =>
-    p.hasRail ? '100px 1fr' : '1fr'};
-
-  grid-template-rows: ${(p) =>
-    p.hasHeader ? '80px 1fr' : '1fr'};
-
-  grid-template-areas: ${(p) => {
-    if (p.hasHeader && p.hasRail) {
-      return `
+      ? `
         "sidebar header"
         "sidebar main"
-      `;
-    }
-
-    if (p.hasHeader && !p.hasRail) {
-      return `
-        "header"
-        "main"
-      `;
-    }
-
-    if (!p.hasHeader && p.hasRail) {
-      return `
+      `
+      : `
         "sidebar main"
       `;
-    }
-
-    return `
-      "main"
-    `;
   }};
-}
-
 `;
 
 const StyledHeaderArea = styled.header<{
