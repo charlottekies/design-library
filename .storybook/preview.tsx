@@ -1,6 +1,6 @@
 import type { Preview } from '@storybook/react-vite'
 import React from 'react'; // Make sure React is imported to use JSX
-import { GlobalStyles } from '../src/styles/GlobalStyles'; 
+import { GlobalStyles } from '../src/styles/globalStyles'; 
 
 const preview: Preview = {
   // 👇 Add the decorators array here
