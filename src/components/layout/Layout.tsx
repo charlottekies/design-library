@@ -191,13 +191,14 @@ const toggleSidebar = () => {
      - ALWAYS in mobile header
      - Desktop only when collapsed + no rail
      ========================= */
- const showHeaderToggle =
-  (hasSidebar ||
-   hasRail) &&
-  (
-    shouldRenderDefaultPhoneHeader ||
-    (hasHeader && sidebarIsCollapsed)
-  );
+const showHeaderToggle =
+  (isPhoneDevice && (hasSidebar || hasRail))
+    ? true
+    : (hasSidebar || hasRail) &&
+      (
+        shouldRenderDefaultPhoneHeader ||
+        (hasHeader && sidebarIsCollapsed)
+      );
 
   /* =========================
      MAIN CONTENT TOGGLE RULE
