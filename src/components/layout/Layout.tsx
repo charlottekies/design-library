@@ -292,7 +292,7 @@ export const Layout = ({
                   )
                 }
               />
-              <StyledMobileDrawer
+              <StyledMobileDrawer hasSidebar={hasSidebar}
                 data-open={
                   variant === 'full'
                 }
@@ -304,8 +304,7 @@ export const Layout = ({
                 >
                   {menuIcon}
                 </SidebarToggleButton>
-
-                {sidebar}
+                  { sidebar ? sidebar : rail }
               </StyledMobileDrawer>
             </>
           )}
@@ -547,11 +546,13 @@ const StyledMainContentArea = styled.main`
   overflow-y: auto;
 `;
 
-const StyledMobileDrawer = styled.aside`
+const StyledMobileDrawer = styled.aside<{
+  hasSidebar: boolean
+}>`
   position: fixed;
   top: 0;
   left: 0;
-  width: 280px;
+  width: ${(p) => p.hasSidebar ? '300px' : `100px`};
   height: 100vh;
   background: white;
   z-index: 1000;
