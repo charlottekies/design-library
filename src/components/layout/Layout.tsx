@@ -199,6 +199,7 @@ export const Layout = ({
     >
       <StyledLayoutContainer
         variant={variant}
+        isPhoneDevice={isPhoneDevice}
         isMobile={isMobileViewport}
         hasHeader={
           hasHeader ||
@@ -336,6 +337,7 @@ const SIDEBAR_BG = '#f9f9f9';
 
 const StyledLayoutContainer = styled.div<{
   variant: SidebarVariant;
+  isPhoneDevice: boolean;
   isMobile: boolean;
   hasHeader: boolean;
   hasSidebar: boolean;
@@ -358,8 +360,11 @@ const StyledLayoutContainer = styled.div<{
       : '300px 1fr';
   }};
 
-  grid-template-rows: ${(p) =>
-    p.hasHeader ? '80px 1fr' : '1fr'};
+  grid-template-rows: ${(p) => {
+    if (!p.hasHeader) return '1fr';
+      return p.isPhoneDevice ? '50px 1fr' : '80px 1fr';
+    }};
+  
 
   grid-template-areas: ${(p) =>
     p.hasHeader
