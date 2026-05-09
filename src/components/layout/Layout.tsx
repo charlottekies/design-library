@@ -240,7 +240,11 @@ export const Layout = ({
           )}
 
         {/* Has a rail and has a drawer and is mobile drawer should not exist, make rail show up and when toggle buton tapped, open sidebar */}
-        
+        {isMobileViewport && hasRail && rail && (
+          <StyledSidebarArea isVisible={true}>
+            {rail}
+          </StyledSidebarArea>
+        )}
 
         {/* =========================
            MOBILE DRAWER
@@ -375,18 +379,52 @@ const StyledLayoutContainer = styled.div<{
     }};
   
 
-  grid-template-areas: ${(p) =>
-    p.hasHeader
-      ? '"sidebar header" "sidebar main"'
-      : '"sidebar main"'};
+  grid-template-areas: ${(p) => {
+  if (p.isMobileViewport) {
+    return p.hasHeader
+      ? '"header" "main"'
+      : '"main"';
+  }
+
+  return p.hasHeader
+    ? '"sidebar header" "sidebar main"'
+    : '"sidebar main"';
+}};
 
   @media (max-width: 768px) {
-    grid-template-columns: 1fr;
-    grid-template-areas: ${(p) =>
-    p.hasHeader
-      ? '"header" "main"'
-      : '"main"'};
-  }
+  grid-template-columns: ${(p) =>
+    p.hasRail ? '100px 1fr' : '1fr'};
+
+  grid-template-rows: ${(p) =>
+    p.hasHeader ? '80px 1fr' : '1fr'};
+
+  grid-template-areas: ${(p) => {
+    if (p.hasHeader && p.hasRail) {
+      return `
+        "sidebar header"
+        "sidebar main"
+      `;
+    }
+
+    if (p.hasHeader && !p.hasRail) {
+      return `
+        "header"
+        "main"
+      `;
+    }
+
+    if (!p.hasHeader && p.hasRail) {
+      return `
+        "sidebar main"
+      `;
+    }
+
+    return `
+      "main"
+    `;
+  }};
+}
+
 `;
 
 const StyledHeaderArea = styled.header<{
