@@ -71,98 +71,121 @@ export const Layout = ({
      MEDIA / DEVICE DETECTION
      ========================= */
   useEffect(() => {
-  const mq = window.matchMedia(
-    `(max-width: ${MOBILE_BREAKPOINT}px)`
-  );
+    const mq = window.matchMedia(
+      `(max-width: ${MOBILE_BREAKPOINT}px)`
+    );
 
-  const update = () => {
-    const isSmallViewport = mq.matches;
+    const update = () => {
+      const isSmallViewport = mq.matches;
 
-    // coarse pointer = finger device
-    const isCoarsePointer =
-      window.matchMedia('(pointer: coarse)')
-        .matches;
+      // coarse pointer = finger device
+      const isCoarsePointer =
+        window.matchMedia('(pointer: coarse)')
+          .matches;
 
-    // phone-ish width
-    const isPhoneWidth =
-      window.innerWidth <= 768;
+      // phone-ish width
+      const isPhoneWidth =
+        window.innerWidth <= 768;
 
-    // true phone
-    const isRealPhone =
-      isPhoneWidth &&
-      isCoarsePointer;
+      // true phone
+      const isRealPhone =
+        isPhoneWidth &&
+        isCoarsePointer;
 
-    setIsMobileViewport(isSmallViewport);
-    setIsPhoneDevice(isRealPhone);
+      setIsMobileViewport(isSmallViewport);
+      setIsPhoneDevice(isRealPhone);
+      console.log(hasRail)
 
-    if (isSmallViewport && hasRail) {
-      setVariant('rail');
-    }
-    if (!isSmallViewport && hasRail) {
-      setVariant('full');
-    }
+      if (isSmallViewport && hasRail) {
+        console.log('setting variant to rail')
 
-    console.log({
-      isSmallViewport,
-      isCoarsePointer,
-      isPhoneWidth,
-      isRealPhone,
-      variant
-    });
+        setVariant('rail');
+      }
+      if (!isSmallViewport && hasRail && hasSidebar) {
+        console.log('setting variant to full')
 
-    // auto collapse on smaller screens
-    setVariant((prev) => {
-      if (isSmallViewport) {
-        return prev === 'full'
-          ? 'collapsed'
-          : prev;
+        setVariant('full');
       }
 
-      return prev === 'collapsed'
-        ? 'full'
-        : prev;
-    });
-  };
+      if (!isSmallViewport && hasRail && !hasSidebar) {
+        console.log('setting variant to rail')
+        setVariant('rail');
+      }
+      if (isSmallViewport && hasRail && !hasSidebar) {
+        console.log('setting variant to rail')
 
-  update();
+        setVariant('rail');
+      }
 
-  mq.addEventListener('change', update);
-  window.addEventListener('resize', update);
 
-  return () => {
-    mq.removeEventListener(
-      'change',
-      update
-    );
-    window.removeEventListener(
-      'resize',
-      update
-    );
-  };
-}, []);
+
+      // auto collapse on smaller screens
+      setVariant((prev) => {
+
+        if (isSmallViewport) {
+          console.log(`prev is ${prev}`)
+
+          return prev === 'full'
+            ? 'collapsed'
+            : prev;
+        }
+        console.log(`prev is ${prev}`)
+
+        return prev === 'collapsed'
+          ? 'full'
+          : prev;
+      });
+
+      console.log({
+        isSmallViewport,
+        isCoarsePointer,
+        isPhoneWidth,
+        isRealPhone,
+        variant
+      });
+
+
+    };
+
+    update();
+
+    mq.addEventListener('change', update);
+    window.addEventListener('resize', update);
+
+    return () => {
+      mq.removeEventListener(
+        'change',
+        update
+      );
+      window.removeEventListener(
+        'resize',
+        update
+      );
+    };
+  }, []);
 
   /* =========================
      TOGGLE LOGIC
      ========================= */
-const toggleSidebar = () => {
-  setVariant((prev) => {
-    // REAL PHONE → drawer open/close
-    if (isPhoneDevice) {
-      return prev === 'full'
-        ? 'collapsed'
-        : 'full';
-    }
+  const toggleSidebar = () => {
+    setVariant((prev) => {
+      // REAL PHONE → drawer open/close
+      if (isPhoneDevice) {
+        return prev === 'full'
+          ? 'collapsed'
+          : 'full';
+      }
 
-    // DESKTOP / RESIZED WINDOW
-    if (prev === 'full') {
-      return rail
-        ? 'rail'
-        : 'collapsed';
-    }
+      // DESKTOP / RESIZED WINDOW
+      if (prev === 'full') {
+        return rail
+          ? 'rail'
+          : 'collapsed';
+      }
 
-    return 'full';
-  });
-};
+      return 'full';
+    });
+  };
 
   /* =========================
      DERIVED STATE
@@ -191,10 +214,10 @@ const toggleSidebar = () => {
      - ALWAYS in mobile header
      - Desktop only when collapsed + no rail
      ========================= */
-const showHeaderToggle =
-  (isPhoneDevice && (hasSidebar || hasRail))
-    ? true
-    : (hasSidebar || hasRail) &&
+  const showHeaderToggle =
+    (isPhoneDevice && (hasSidebar || hasRail))
+      ? true
+      : (hasSidebar || hasRail) &&
       (
         shouldRenderDefaultPhoneHeader ||
         (hasHeader && sidebarIsCollapsed)
@@ -234,52 +257,41 @@ const showHeaderToggle =
         {/* =========================
            SIDEBAR (DESKTOP)
            ========================= */}
-        {!isPhoneDevice &&
-          hasSidebar && (
-            <StyledSidebarArea
-              isVisible={
-                variant !== 'collapsed' ||
-                !!rail
-              }
-            >
-              {variant !==
-                'collapsed' && (
-                  <SidebarToggleButton
-                    onClick={
-                      toggleSidebar
-                    }
-                  >
-                    {menuIcon}
-                  </SidebarToggleButton>
-                )}
 
-              {variant === 'rail' &&
-                rail
-                ? rail
-                : variant === 'full'
-                  ? sidebar
-                  : null}
-            </StyledSidebarArea>
-          )}
+        {!isPhoneDevice && (
+          <StyledSidebarArea
+            isVisible={variant !== 'collapsed' || !!rail}
+          >
+            {variant !== 'collapsed' && (
+              <SidebarToggleButton onClick={toggleSidebar}>
+                {menuIcon}
+              </SidebarToggleButton>
+            )}
+
+            {variant === 'rail' && rail && rail}
+
+            {variant === 'full' && sidebar && sidebar}
+          </StyledSidebarArea>
+        )}
 
         {/* Has a rail and has a drawer and is mobile drawer should not exist, make rail show up and when toggle buton tapped, open sidebar */}
         {!isPhoneDevice && isMobileViewport && hasRail && rail && (
-        <StyledSidebarArea isVisible={true}>
-          <RailToggleWrapper>
-            <SidebarToggleButton onClick={toggleSidebar}>
-              {menuIcon}
-            </SidebarToggleButton>
-          </RailToggleWrapper>
+          <StyledSidebarArea isVisible={true}>
+            <RailToggleWrapper>
+              <SidebarToggleButton onClick={toggleSidebar}>
+                {menuIcon}
+              </SidebarToggleButton>
+            </RailToggleWrapper>
 
-          {rail}
-        </StyledSidebarArea>
-)}
+            {rail}
+          </StyledSidebarArea>
+        )}
 
         {/* =========================
            MOBILE DRAWER
            ========================= */}
         {isPhoneDevice &&
-          (hasSidebar  || hasRail) && (
+          (hasSidebar || hasRail) && (
             <>
               <MobileDrawerOverlay
                 active={
@@ -385,30 +397,28 @@ const StyledLayoutContainer = styled.div<{
      GRID COLUMNS
      ========================= */
   grid-template-columns: ${(p) => {
-    // REAL PHONE
-    // Sidebar becomes drawer
+    // PHONE: drawer mode, no grid sidebar column
     if (p.isPhoneDevice) {
-      return '1fr'
+      return '1fr';
     }
 
-    // DESKTOP / RESIZED WINDOW
-
-    // no sidebar visible
-    if (
-      !p.hasSidebar ||
-      (p.variant === 'collapsed' &&
-        !p.hasRail)
-    ) {
+    // NO NAV AT ALL
+    if (!p.hasSidebar && !p.hasRail) {
       return '0px 1fr';
     }
 
-    // rail mode
+    // RAIL MODE (explicit or fallback when no sidebar exists)
     if (p.variant === 'rail') {
       return '100px 1fr';
     }
 
-    // full sidebar
-    return '300px 1fr';
+    // FULL SIDEBAR MODE
+    if (p.variant === 'full') {
+      return '300px 1fr';
+    }
+
+    // COLLAPSED → still reserve layout stability (prevents shift bugs)
+    return '0px 1fr';
   }};
 
   /* =========================
@@ -436,9 +446,9 @@ const StyledLayoutContainer = styled.div<{
   grid-template-areas: ${(p) => {
     // REAL PHONE
     // sidebar is drawer-only
-    
+
     if (p.isPhoneDevice) {
-      
+
       return p.hasHeader
         ? `
           "header"

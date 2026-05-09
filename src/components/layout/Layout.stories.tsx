@@ -89,12 +89,28 @@ export const NoHeader: Story = {
     },
   },
 };
+
 /* ------------------------------------
  * WITHOUT HEADER (IMPORTANT EDGE CASE)
  * ------------------------------------ */
 export const NoSidebar: Story = {
   args: {
     header: <Placeholder label="Header" color="#2c3e50" />,
+    children: (
+      <Placeholder label="Main Content (No Header)" color="#ecf0f1" />
+    ),
+  },
+  parameters: {
+    viewport: {
+      defaultViewport: 'mobile1',
+    },
+  },
+};
+
+export const NoSidebarWithRail: Story = {
+  args: {
+    header: <Placeholder label="Header" color="#2c3e50" />,
+    rail: <Placeholder label="Rail" color ="#34495e" />,
     children: (
       <Placeholder label="Main Content (No Header)" color="#ecf0f1" />
     ),
