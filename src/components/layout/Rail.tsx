@@ -29,9 +29,9 @@ export const Rail = ({  footer, children }: RailProps) => {
       </StyledRailNav>
 
       {footer && (
-        <StyledRightRailFooter>
+        <StyledRailFooter>
           {footer}
-        </StyledRightRailFooter>
+        </StyledRailFooter>
       )}
     </StyledRailContainer>
   );
@@ -47,7 +47,7 @@ const StyledRailContainer = styled.div`
   width: 100px;
   height: 100%;
   background-color: ${color.surface.default};
-  border-right: ${space.space02} solid ${color.border.primary};
+  border-right: ${space.space01} solid ${color.border.primary};
   box-sizing: border-box;
 `;
 
@@ -58,7 +58,7 @@ const StyledRailHeader = styled.div`
   justify-content: center;
   height: 80px;
   flex-shrink: 0;
-  border-bottom: ${space.space02} solid ${color.border.primary};
+  border-bottom: ${space.space01} solid ${color.border.primary};
 `;
 
 const CloseButton = styled.button`
@@ -82,10 +82,10 @@ export const StyledRailNav = styled.nav`
   padding: 0.5rem 0;
 `;
 
-export const StyledRightRailFooter = styled.div`
+export const StyledRailFooter = styled.div`
   padding: 0.75rem;
   flex-shrink: 0;
-  border-top: ${space.space02} solid ${color.border.primary};
+  border-top: ${space.space01} solid ${color.border.primary};
 
   display: flex;
   justify-content: center;

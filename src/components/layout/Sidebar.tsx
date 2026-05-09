@@ -55,7 +55,7 @@ const StyledSidebarContainer = styled.aside`
   flex-direction: column;
   height: 100%;
   background-color: ${color.surface.default};
-  border-right: ${space.space02} solid ${color.border.primary};
+  border-right: ${space.space01} solid ${color.border.primary};
 `;
 
 const StyledSidebarHeader = styled.div`
@@ -64,7 +64,7 @@ const StyledSidebarHeader = styled.div`
   justify-content: space-between;
   height: 80px;
   flex-shrink: 0;
-  border-bottom: ${space.space02} solid ${color.border.primary};
+  border-bottom: ${space.space01} solid ${color.border.primary};
 `;
 
 const HeaderLeftSlot = styled.div`
@@ -97,5 +97,5 @@ export const StyledSidebarNav = styled.nav`
 export const StyledSidebarFooter = styled.div`
   padding: 1rem;
   flex-shrink: 0;
-  border-top: ${space.space02} solid ${color.border.primary};
+  border-top: ${space.space01} solid ${color.border.primary};
 `;
