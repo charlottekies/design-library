@@ -41,12 +41,29 @@ const Placeholder = ({ label, color }: { label: string; color: string }) => (
 );
 
 /* ------------------------------------
- * DEFAULT (DESKTOP + MOBILE BEHAVIOR)
+ * DEFAULT 
  * ------------------------------------ */
 export const Default: Story = {
   args: {
     header: <Placeholder label="Header" color="#2c3e50" />,
     sidebar: <Placeholder label="Sidebar" color="#34495e" />,
+    children: <Placeholder label="Main Content" color="#ecf0f1" />,
+  },
+  parameters: {
+    viewport: {
+      defaultViewport: 'desktop',
+    },
+  },
+};
+
+/* ------------------------------------
+ * DEFAULT 
+ * ------------------------------------ */
+export const WithRail: Story = {
+  args: {
+    header: <Placeholder label="Header" color="#2c3e50" />,
+    sidebar: <Placeholder label="Sidebar" color="#34495e" />,
+    rail: <Placeholder label="Rail" color ="#34495e" />,
     children: <Placeholder label="Main Content" color="#ecf0f1" />,
   },
   parameters: {
