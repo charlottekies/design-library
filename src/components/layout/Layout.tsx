@@ -10,7 +10,6 @@ import { color } from '../../tokens/semantic-color';
 import { space } from '../../tokens/space';
 import { Hamburger } from '../../icons/Hamburger';
 
-
 /* Types & Context  */
 
 export type SidebarVariant =
@@ -214,8 +213,8 @@ export const Layout = ({
     window.addEventListener('resize', handleUpdate);
 
     return () => {
-      mq.removeEventListener('change', update);
-      window.removeEventListener('resize', update);
+      mq.removeEventListener('change', handleUpdate);
+      window.removeEventListener('resize', handleUpdate);
     };
   }, [hasRail, hasSidebar]);
 
