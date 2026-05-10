@@ -238,9 +238,7 @@ export const Layout = ({
         hasSidebar={hasSidebar}
         hasRail={hasRail}
       >
-        {/* =========================
-           SIDEBAR (DESKTOP)
-           ========================= */}
+        {/* Desktop Sidebar */}
         {!isPhoneDevice && (sidebar || rail) && (
           <StyledSidebarArea
             isVisible={variant !== 'collapsed' || !!rail}
@@ -252,9 +250,8 @@ export const Layout = ({
           </StyledSidebarArea>
         )}
 
-        {/* MOBILE DRAWER */}
-        {isPhoneDevice &&
-          (hasSidebar || hasRail) && (
+        {/* Mobile Side Drawer */}
+        {isPhoneDevice && (hasSidebar || hasRail) && (
             <>
               <StyledMobileDrawerOverlay
                 active={
@@ -276,11 +273,8 @@ export const Layout = ({
             </>
           )}
 
-        {/* =========================
-           HEADER
-           ========================= */}
-        {(hasHeader ||
-          shouldRenderDefaultPhoneHeader) && (
+        {/* Header */}
+        {(hasHeader || shouldRenderDefaultPhoneHeader) && (
             <StyledHeaderArea
               $isDefaultMobile={
                 shouldRenderDefaultPhoneHeader
@@ -310,7 +304,7 @@ export const Layout = ({
             </StyledHeaderArea>
           )}
 
-        {/* MAIN CONTENT */}
+        {/* Main Content Area */}
         <StyledMainContentArea>
           {showMainContentToggle && (
             <StyledMainContentToggle
@@ -329,8 +323,7 @@ export const Layout = ({
   );
 };
 
-/* STYLED COMPONENTS */
-
+/* Styled Components */
 
 const StyledLayoutContainer = styled.div<{
   variant: SidebarVariant;
