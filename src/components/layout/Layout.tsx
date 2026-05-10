@@ -62,8 +62,7 @@ export const Layout = ({
   const [isMobileViewport, setIsMobileViewport] = useState(false);
   const [isPhoneDevice, setIsPhoneDevice] = useState(false);
 
-  const [variant, setVariant] =
-    useState<SidebarVariant>(() => {
+  const [variant, setVariant] = useState<SidebarVariant>(() => {
       if (!sidebar && rail && !isPhoneDevice) return 'rail';
       if (sidebar && !rail && !isPhoneDevice) return 'full';
       if (sidebar && rail && !isPhoneDevice) return 'full';
