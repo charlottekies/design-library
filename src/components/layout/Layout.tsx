@@ -8,6 +8,7 @@ import {
 } from 'react';
 import { color } from '../../tokens/semantic-color';
 import { space } from '../../tokens/space';
+import { Hamburger } from '../../icons/hamburger';
 
 
 /* =========================
@@ -49,9 +50,7 @@ export const useLayout = () => {
   return ctx;
 };
 
-/* =========================
-   LAYOUT COMPONENT
-   ========================= */
+/* Layout */
 
 export const Layout = ({
   header,
@@ -104,12 +103,8 @@ export const Layout = ({
     });
   };
 
-  /* =========================
-     DERIVED STATE
-     ========================= */
-  //  TODO: Replace with custom icon from icons
   const menuIcon =
-    icons?.menu ?? <span>☰</span>;
+    icons?.menu ?? <Hamburger/>
 
   const hasSidebar = !!sidebar;
   const hasHeader = !!header;
@@ -307,9 +302,7 @@ export const Layout = ({
           </StyledSidebarArea>
         )}
 
-        {/* =========================
-           MOBILE DRAWER
-           ========================= */}
+        {/* MOBILE DRAWER */}
         {isPhoneDevice &&
           (hasSidebar || hasRail) && (
             <>
@@ -367,9 +360,7 @@ export const Layout = ({
             </StyledHeaderArea>
           )}
 
-        {/* =========================
-           MAIN CONTENT
-           ========================= */}
+        {/* MAIN CONTENT */}
         <StyledMainContentArea>
           {showMainContentToggle && (
             <StyledMainContentToggle
@@ -388,9 +379,7 @@ export const Layout = ({
   );
 };
 
-/* =========================
-   STYLED COMPONENTS
-   ========================= */
+/* STYLED COMPONENTS */
 
 
 const StyledLayoutContainer = styled.div<{

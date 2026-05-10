@@ -5,3 +5,4 @@ export { space } from "./tokens/space";
 export { Layout } from "./components/layout/Layout";
 export { Sidebar } from "./components/layout/Sidebar";
 export { GlobalStyles } from "./styles/globalStyles";
+export { Hamburger } from "./icons/hamburger"
