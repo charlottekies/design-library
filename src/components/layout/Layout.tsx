@@ -30,6 +30,8 @@ export interface LayoutProps {
 interface LayoutContextValue {
   variant: SidebarVariant;
   isMobileViewport: boolean;
+  isPhoneDevice: boolean;
+  railMode: boolean;
   toggleSidebar: () => void;
 }
 
@@ -67,81 +69,13 @@ export const Layout = ({
     useState(false);
 
   const [variant, setVariant] =
-    useState<SidebarVariant>('full');
-
-  /* =========================
-     MEDIA / DEVICE DETECTION
-     ========================= */
-  useEffect(() => {
-    const mq = window.matchMedia(
-      `(max-width: ${MOBILE_BREAKPOINT}px)`
-    );
-
-    const update = () => {
-      const isSmallViewport = mq.matches;
-
-      // coarse pointer = finger device
-      const isCoarsePointer =
-        window.matchMedia('(pointer: coarse)')
-          .matches;
-
-      // phone-ish width
-      const isPhoneWidth =
-        window.innerWidth <= 768;
-
-      // true phone
-      const isRealPhone =
-        isPhoneWidth &&
-        isCoarsePointer;
-
-      setIsMobileViewport(isSmallViewport);
-      setIsPhoneDevice(isRealPhone);
-
-      if (isSmallViewport && hasRail) {
-        setVariant('rail');
-      }
-      if (!isSmallViewport && hasRail && hasSidebar) {
-        setVariant('full');
-      }
-
-      if (!isSmallViewport && hasRail && !hasSidebar) {
-        setVariant('rail');
-      }
-      if (isSmallViewport && hasRail && !hasSidebar) {
-        setVariant('rail');
-      }
-
-      // auto collapse on smaller screens
-      setVariant((prev) => {
-
-        if (isSmallViewport) {
-          return prev === 'full'
-            ? 'collapsed'
-            : prev;
-        }
-
-        return prev === 'collapsed'
-          ? 'full'
-          : prev;
-      });
-    };
-
-    update();
-
-    mq.addEventListener('change', update);
-    window.addEventListener('resize', update);
-
-    return () => {
-      mq.removeEventListener(
-        'change',
-        update
-      );
-      window.removeEventListener(
-        'resize',
-        update
-      );
-    };
-  }, []);
+    useState<SidebarVariant>(() => {
+      if (!sidebar && rail && !isPhoneDevice) return 'rail';
+      if (sidebar && !rail && !isPhoneDevice) return 'full';
+      if (sidebar && rail && !isPhoneDevice) return 'full';
+      if (sidebar && rail && isMobileViewport) return 'rail';
+      return 'collapsed';
+    });
 
   /* =========================
      TOGGLE LOGIC
@@ -162,6 +96,10 @@ export const Layout = ({
           : 'collapsed';
       }
 
+      if (prev === 'rail' && !sidebar) {
+        return 'rail';
+      }
+
       return 'full';
     });
   };
@@ -169,8 +107,8 @@ export const Layout = ({
   /* =========================
      DERIVED STATE
      ========================= */
-//  TODO: Replace with custom icon from icons
-     const menuIcon =
+  //  TODO: Replace with custom icon from icons
+  const menuIcon =
     icons?.menu ?? <span>☰</span>;
 
   const hasSidebar = !!sidebar;
@@ -214,12 +152,133 @@ export const Layout = ({
     sidebarIsCollapsed &&
     !isPhoneDevice;
 
+
+  useEffect(() => {
+    const mq = window.matchMedia(
+      `(max-width: ${MOBILE_BREAKPOINT}px)`
+    );
+
+    let previousIsSmallViewport =
+      mq.matches;
+
+    const update = () => {
+      const isSmallViewport =
+        mq.matches;
+
+      const isCoarsePointer =
+        window.matchMedia(
+          '(pointer: coarse)'
+        ).matches;
+
+      const isRealPhone =
+        isSmallViewport &&
+        isCoarsePointer;
+
+      setIsMobileViewport(
+        isSmallViewport
+      );
+      setIsPhoneDevice(
+        isRealPhone
+      );
+
+      const breakpointChanged =
+        previousIsSmallViewport !==
+        isSmallViewport;
+
+      if (breakpointChanged || previousIsSmallViewport === mq.matches) {
+        setVariant((prev) => {
+          // ===== SMALL VIEWPORT =====
+          if (isSmallViewport) {
+
+            if (isSmallViewport && hasRail && hasSidebar) {
+              return 'rail';
+            }
+            // real phone:
+            // collapse sidebar
+            if (isRealPhone) {
+              return prev === 'full'
+                ? 'collapsed'
+                : prev;
+            }
+
+            // zoomed desktop / tablet:
+            // rail should always remain
+            if (hasRail && !hasSidebar) {
+              return 'rail';
+            }
+
+            if (hasRail) {
+              return 'rail';
+            }
+
+            // sidebar-only layout
+            return prev === 'full'
+              ? 'collapsed'
+              : prev;
+          }
+
+          // ===== LARGE VIEWPORT =====
+
+          // sidebar + rail
+          if (hasSidebar && hasRail) {
+            return 'full';
+          }
+
+          // rail only
+          if (hasRail) {
+            return 'rail';
+          }
+
+          // sidebar only
+          if (hasSidebar) {
+            return 'full';
+          }
+
+          return prev;
+        });
+
+        previousIsSmallViewport =
+          isSmallViewport;
+      }
+    };
+
+
+    update();
+
+    mq.addEventListener(
+      'change',
+      update
+    );
+
+    window.addEventListener(
+      'resize',
+      update
+    );
+
+    return () => {
+      mq.removeEventListener(
+        'change',
+        update
+      );
+
+      window.removeEventListener(
+        'resize',
+        update
+      );
+    };
+  }, [
+    hasRail,
+    hasSidebar,
+  ]);
+
+
   return (
     <LayoutContext.Provider
       value={{
         variant,
-        isMobileViewport:
-          isMobileViewport,
+        isMobileViewport,
+        railMode: !!rail && !!!sidebar, 
+        isPhoneDevice,
         toggleSidebar,
       }}
     >
@@ -241,13 +300,6 @@ export const Layout = ({
           <StyledSidebarArea
             isVisible={variant !== 'collapsed' || !!rail}
           >
-            {/* Toggle ONLY if sidebar exists (rail alone cannot expand) */}
-            {sidebar && (
-              <StyledSidebarToggleButton onClick={toggleSidebar}>
-                {menuIcon}
-              </StyledSidebarToggleButton>
-            )}
-
             {/* Render based on variant */}
             {variant === 'rail' && rail && rail}
 
@@ -276,14 +328,7 @@ export const Layout = ({
                   variant === 'full'
                 }
               >
-                <StyledSidebarToggleButton
-                  onClick={
-                    toggleSidebar
-                  }
-                >
-                  {menuIcon}
-                </StyledSidebarToggleButton>
-                  { sidebar ? sidebar : rail }
+                {sidebar ? sidebar : rail}
               </StyledMobileDrawer>
             </>
           )}
@@ -488,16 +533,6 @@ const StyledHeaderToggleButton = styled.button`
   bottom: 0;
   width: 60px;
   z-index: 10;
-  background: transparent;
-  border: none;
-  cursor: pointer;
-`;
-
-const StyledSidebarToggleButton = styled.button`
-  position: absolute;
-  top: ${space.space08};
-  right: ${space.space07};
-  z-index: 40;
   background: transparent;
   border: none;
   cursor: pointer;
