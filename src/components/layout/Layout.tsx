@@ -11,9 +11,7 @@ import { space } from '../../tokens/space';
 import { Hamburger } from '../../icons/hamburger';
 
 
-/* =========================
-   TYPES & CONTEXT
-   ========================= */
+/* TYPES & CONTEXT  */
 
 export type SidebarVariant =
   | 'full'
