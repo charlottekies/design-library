@@ -11,7 +11,7 @@ import { space } from '../../tokens/space';
 import { Hamburger } from '../../icons/hamburger';
 
 
-/* TYPES & CONTEXT  */
+/* Types & Context  */
 
 export type SidebarVariant =
   | 'full'
@@ -48,7 +48,7 @@ export const useLayout = () => {
   return ctx;
 };
 
-/* Layout */
+/* Default Exported Layout Component */
 
 export const Layout = ({
   header,
@@ -323,7 +323,7 @@ export const Layout = ({
   );
 };
 
-/* Styled Components */
+/* Styled Components for Internal Use */
 
 const StyledLayoutContainer = styled.div<{
   variant: SidebarVariant;
