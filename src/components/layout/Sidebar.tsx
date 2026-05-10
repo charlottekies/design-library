@@ -2,27 +2,20 @@ import type { ReactNode } from 'react';
 import styled from '@emotion/styled';
 import { color } from '../../tokens/semantic-color';
 import { space } from '../../tokens/space';
-// or your icon system
 import { useLayout } from './Layout';
-
+import { Hamburger } from '../../icons/Hamburger';
 
 interface SidebarProps {
   header?: ReactNode;
   footer?: ReactNode;
-  children: ReactNode; // This becomes the "Main/Nav" section
+  children: ReactNode;
 }
 
-/* Main Component */
-
-/** 
- * A Sidebar with optional header and footer content areas 
-*/
 export const Sidebar = ({ header, footer, children }: SidebarProps) => {
   const { toggleSidebar } = useLayout();
 
   return (
     <StyledSidebarContainer>
-      
       <StyledSidebarHeader>
         <HeaderLeftSlot>
           {header}
@@ -30,7 +23,7 @@ export const Sidebar = ({ header, footer, children }: SidebarProps) => {
 
         <HeaderRightSlot>
           <CloseButton onClick={toggleSidebar}>
-            "X" 
+            <Hamburger />
           </CloseButton>
         </HeaderRightSlot>
       </StyledSidebarHeader>
@@ -48,8 +41,10 @@ export const Sidebar = ({ header, footer, children }: SidebarProps) => {
   );
 };
 
+/* =========================
+   STYLES
+   ========================= */
 
-/* Styled Components */
 const StyledSidebarContainer = styled.aside`
   display: flex;
   flex-direction: column;
@@ -58,35 +53,66 @@ const StyledSidebarContainer = styled.aside`
   border-right: ${space.space01} solid ${color.border.primary};
 `;
 
+/**
+ * FLEX HEADER (stable version)
+ */
 const StyledSidebarHeader = styled.div`
   display: flex;
   align-items: center;
   justify-content: space-between;
+
   height: 80px;
   flex-shrink: 0;
+
+  padding: 0 12px;
+
   border-bottom: ${space.space01} solid ${color.border.primary};
 `;
 
+/**
+ * LEFT SLOT
+ * - can grow
+ * - can shrink
+ * - never breaks layout
+ */
 const HeaderLeftSlot = styled.div`
   display: flex;
   align-items: center;
   gap: 0.5rem;
+
+  flex: 1;
   min-width: 0;
 `;
 
+/**
+ * RIGHT SLOT (FIXED)
+ * - NEVER collapses
+ * - always same footprint
+ */
 const HeaderRightSlot = styled.div`
   display: flex;
   align-items: center;
+  justify-content: center;
+
+  flex: 0 0 40px; 
 `;
 
+/**
+ * BUTTON (fixed hit area)
+ */
 const CloseButton = styled.button`
-  background: transparent;
-  border: none;
-  cursor: pointer;
+  width: 40px;
+  height: 40px;
 
   display: flex;
   align-items: center;
   justify-content: center;
+
+  background: transparent;
+  border: none;
+  cursor: pointer;
+
+  flex-shrink: 0;
 `;
 
 export const StyledSidebarNav = styled.nav`
