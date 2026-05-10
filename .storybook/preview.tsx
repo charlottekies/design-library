@@ -13,6 +13,11 @@ decorators: [
     ),
   ],
   parameters: {
+    options: {
+      storySort: {
+        order: ['Tokens', ['Overview', 'Colors'], '*'],
+      },
+    },
     controls: {
       matchers: {
        color: /(background|color)$/i,

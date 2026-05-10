@@ -66,13 +66,14 @@ export const Layout = ({
   const [isPhoneDevice, setIsPhoneDevice] =
     useState(false);
 
-const [variant, setVariant] =
-  useState<SidebarVariant>(() => {
-    if (!sidebar && rail && !isPhoneDevice) return 'rail';
-    if (sidebar && !rail && !isPhoneDevice) return 'full';
-    if (sidebar && rail && !isPhoneDevice) return 'full';
-    return 'collapsed';
-  });
+  const [variant, setVariant] =
+    useState<SidebarVariant>(() => {
+      if (!sidebar && rail && !isPhoneDevice) return 'rail';
+      if (sidebar && !rail && !isPhoneDevice) return 'full';
+      if (sidebar && rail && !isPhoneDevice) return 'full';
+      if (sidebar && rail && isMobileViewport) return 'rail';
+      return 'collapsed';
+    });
 
   /* =========================
      TOGGLE LOGIC
@@ -104,8 +105,8 @@ const [variant, setVariant] =
   /* =========================
      DERIVED STATE
      ========================= */
-//  TODO: Replace with custom icon from icons
-     const menuIcon =
+  //  TODO: Replace with custom icon from icons
+  const menuIcon =
     icons?.menu ?? <span>☰</span>;
 
   const hasSidebar = !!sidebar;
@@ -149,118 +150,124 @@ const [variant, setVariant] =
     sidebarIsCollapsed &&
     !isPhoneDevice;
 
- useEffect(() => {
-  const mq = window.matchMedia(
-    `(max-width: ${MOBILE_BREAKPOINT}px)`
-  );
 
-  let previousIsSmallViewport =
-    mq.matches;
+  useEffect(() => {
+    const mq = window.matchMedia(
+      `(max-width: ${MOBILE_BREAKPOINT}px)`
+    );
 
-  const update = () => {
-    const isSmallViewport =
+    let previousIsSmallViewport =
       mq.matches;
 
-    const isCoarsePointer =
-      window.matchMedia(
-        '(pointer: coarse)'
-      ).matches;
+    const update = () => {
+      const isSmallViewport =
+        mq.matches;
 
-    const isRealPhone =
-      isSmallViewport &&
-      isCoarsePointer;
+      const isCoarsePointer =
+        window.matchMedia(
+          '(pointer: coarse)'
+        ).matches;
 
-    setIsMobileViewport(
-      isSmallViewport
-    );
-    setIsPhoneDevice(
-      isRealPhone
-    );
+      const isRealPhone =
+        isSmallViewport &&
+        isCoarsePointer;
 
-    const breakpointChanged =
-      previousIsSmallViewport !==
-      isSmallViewport;
+      setIsMobileViewport(
+        isSmallViewport
+      );
+      setIsPhoneDevice(
+        isRealPhone
+      );
 
-    if (breakpointChanged) {
-      setVariant((prev) => {
-        // ===== SMALL VIEWPORT =====
-        if (isSmallViewport) {
-          // real phone:
-          // collapse sidebar
-          if (isRealPhone) {
+      const breakpointChanged =
+        previousIsSmallViewport !==
+        isSmallViewport;
+
+      if (breakpointChanged || previousIsSmallViewport === mq.matches) {
+        setVariant((prev) => {
+          // ===== SMALL VIEWPORT =====
+          if (isSmallViewport) {
+
+            if (isSmallViewport && hasRail && hasSidebar) {
+              return 'rail';
+            }
+            // real phone:
+            // collapse sidebar
+            if (isRealPhone) {
+              return prev === 'full'
+                ? 'collapsed'
+                : prev;
+            }
+
+            // zoomed desktop / tablet:
+            // rail should always remain
+            if (hasRail && !hasSidebar) {
+              return 'rail';
+            }
+
+            if (hasRail) {
+              return 'rail';
+            }
+
+            // sidebar-only layout
             return prev === 'full'
               ? 'collapsed'
               : prev;
           }
 
-          // zoomed desktop / tablet:
-          // rail should always remain
-          if (hasRail && !hasSidebar) {
+          // ===== LARGE VIEWPORT =====
+
+          // sidebar + rail
+          if (hasSidebar && hasRail) {
+            return 'full';
+          }
+
+          // rail only
+          if (hasRail) {
             return 'rail';
           }
 
-            if (hasRail) {
-            return 'rail';
+          // sidebar only
+          if (hasSidebar) {
+            return 'full';
           }
 
-          // sidebar-only layout
-          return prev === 'full'
-            ? 'collapsed'
-            : prev;
-        }
+          return prev;
+        });
 
-        // ===== LARGE VIEWPORT =====
+        previousIsSmallViewport =
+          isSmallViewport;
+      }
+    };
 
-        // sidebar + rail
-        if (hasSidebar && hasRail) {
-          return 'full';
-        }
 
-        // rail only
-        if (hasRail) {
-          return 'rail';
-        }
+    update();
 
-        // sidebar only
-        if (hasSidebar) {
-          return 'full';
-        }
-
-        return prev;
-      });
-
-      previousIsSmallViewport =
-        isSmallViewport;
-    }
-  };
-
-  update();
-
-  mq.addEventListener(
-    'change',
-    update
-  );
-
-  window.addEventListener(
-    'resize',
-    update
-  );
-
-  return () => {
-    mq.removeEventListener(
+    mq.addEventListener(
       'change',
       update
     );
 
-    window.removeEventListener(
+    window.addEventListener(
       'resize',
       update
     );
-  };
-}, [
-  hasRail,
-  hasSidebar,
-]);
+
+    return () => {
+      mq.removeEventListener(
+        'change',
+        update
+      );
+
+      window.removeEventListener(
+        'resize',
+        update
+      );
+    };
+  }, [
+    hasRail,
+    hasSidebar,
+  ]);
 
 
   return (
@@ -318,7 +325,7 @@ const [variant, setVariant] =
                   variant === 'full'
                 }
               >
-                { sidebar ? sidebar : rail }
+                {sidebar ? sidebar : rail}
               </StyledMobileDrawer>
             </>
           )}
