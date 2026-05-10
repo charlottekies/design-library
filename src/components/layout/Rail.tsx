@@ -56,9 +56,7 @@ export const Rail = ({
   );
 };
 
-/* =========================
-   STYLED COMPONENTS
-   ========================= */
+/* STYLED COMPONENTS  */
 
 const StyledRailContainer = styled.div`
   display: flex;
