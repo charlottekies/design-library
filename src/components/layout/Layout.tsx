@@ -59,11 +59,8 @@ export const Layout = ({
 }: LayoutProps) => {
   const MOBILE_BREAKPOINT = 768;
 
-  const [isMobileViewport, setIsMobileViewport] =
-    useState(false);
-
-  const [isPhoneDevice, setIsPhoneDevice] =
-    useState(false);
+  const [isMobileViewport, setIsMobileViewport] = useState(false);
+  const [isPhoneDevice, setIsPhoneDevice] = useState(false);
 
   const [variant, setVariant] =
     useState<SidebarVariant>(() => {
@@ -74,9 +71,7 @@ export const Layout = ({
       return 'collapsed';
     });
 
-  /* =========================
-     TOGGLE LOGIC
-     ========================= */
+  /* Toggle Logic */
   const toggleSidebar = () => {
     setVariant((prev) => {
       // REAL PHONE → drawer open/close
@@ -101,23 +96,14 @@ export const Layout = ({
     });
   };
 
-  const menuIcon =
-    icons?.menu ?? <Hamburger/>
+  /* Derived State */
 
+  const menuIcon = icons?.menu ?? <Hamburger />
   const hasSidebar = !!sidebar;
   const hasHeader = !!header;
   const hasRail = !!rail;
-
-  const sidebarIsCollapsed =
-    variant === 'collapsed';
-
-  /* =========================
-     MOBILE HEADER (REAL PHONE ONLY)
-     ========================= */
-  const shouldRenderDefaultPhoneHeader =
-    !hasHeader &&
-    isPhoneDevice &&
-    hasSidebar;
+  const isSidebarCollapsed = variant === 'collapsed';
+  const shouldRenderDefaultPhoneHeader = !hasHeader && isPhoneDevice && hasSidebar;
 
   /* =========================
      HEADER TOGGLE RULE
@@ -125,27 +111,30 @@ export const Layout = ({
      - ALWAYS in mobile header
      - Desktop only when collapsed + no rail
      ========================= */
+  /**
+   * Determines whether a toggle button should be displayed in a header component
+   */
   const showHeaderToggle =
-    (isPhoneDevice && (hasSidebar || hasRail))
-      ? true
-      : (hasSidebar || hasRail) &&
-      (
-        shouldRenderDefaultPhoneHeader ||
-        (hasHeader && sidebarIsCollapsed)
-      );
+    (isPhoneDevice && (hasSidebar || hasRail)) ? true :
+      (hasSidebar || hasRail) && (shouldRenderDefaultPhoneHeader || (hasHeader && isSidebarCollapsed));
 
-  /* =========================
-     MAIN CONTENT TOGGLE RULE
-     Only fallback when no header exists
-     ========================= */
+  /**
+   * Determines whether a toggle should be displayed in the main content section. 
+   * Eventually I think this should be the responsibility of the parent. 
+   * For now, this is an opinionated layout and places menu icons for you
+   */
   const showMainContentToggle =
     hasSidebar &&
     !hasHeader &&
     !shouldRenderDefaultPhoneHeader &&
-    sidebarIsCollapsed &&
+    isSidebarCollapsed &&
     !isPhoneDevice;
 
+  /* UseEffects */
 
+  /** 
+   * Listens for changes to the viewport size and updates the state (variant) of the sidebar panel
+   */
   useEffect(() => {
     const mq = window.matchMedia(
       `(max-width: ${MOBILE_BREAKPOINT}px)`
@@ -155,47 +144,30 @@ export const Layout = ({
       mq.matches;
 
     const update = () => {
-      const isSmallViewport =
-        mq.matches;
+      const isSmallViewport = mq.matches;
+      const isCoarsePointer = window.matchMedia('(pointer: coarse)').matches;
+      const isRealPhone = isSmallViewport && isCoarsePointer;
+      const breakpointChanged = previousIsSmallViewport !== isSmallViewport;
 
-      const isCoarsePointer =
-        window.matchMedia(
-          '(pointer: coarse)'
-        ).matches;
-
-      const isRealPhone =
-        isSmallViewport &&
-        isCoarsePointer;
-
-      setIsMobileViewport(
-        isSmallViewport
-      );
-      setIsPhoneDevice(
-        isRealPhone
-      );
-
-      const breakpointChanged =
-        previousIsSmallViewport !==
-        isSmallViewport;
+      setIsMobileViewport(isSmallViewport);
+      setIsPhoneDevice(isRealPhone);
 
       if (breakpointChanged || previousIsSmallViewport === mq.matches) {
         setVariant((prev) => {
-          // ===== SMALL VIEWPORT =====
           if (isSmallViewport) {
 
-            if (isSmallViewport && hasRail && hasSidebar) {
-              return 'rail';
-            }
-            // real phone:
-            // collapse sidebar
+            // collapse sidebar on phone
             if (isRealPhone) {
               return prev === 'full'
                 ? 'collapsed'
                 : prev;
             }
 
-            // zoomed desktop / tablet:
-            // rail should always remain
+            if (hasRail && hasSidebar) {
+              return 'rail';
+            }
+
+            // large desktop / tablet: rail should always remain
             if (hasRail && !hasSidebar) {
               return 'rail';
             }
@@ -210,59 +182,39 @@ export const Layout = ({
               : prev;
           }
 
-          // ===== LARGE VIEWPORT =====
+          else if (!isSmallViewport) {
 
-          // sidebar + rail
-          if (hasSidebar && hasRail) {
-            return 'full';
+            if (hasSidebar && hasRail) {
+              return 'full';
+            }
+
+            // rail only
+            if (hasRail) {
+              return 'rail';
+            }
+
+            // sidebar only
+            if (hasSidebar) {
+              return 'full';
+            }
           }
-
-          // rail only
-          if (hasRail) {
-            return 'rail';
-          }
-
-          // sidebar only
-          if (hasSidebar) {
-            return 'full';
-          }
-
           return prev;
         });
 
-        previousIsSmallViewport =
-          isSmallViewport;
+        previousIsSmallViewport = isSmallViewport;
       }
     };
 
-
     update();
 
-    mq.addEventListener(
-      'change',
-      update
-    );
-
-    window.addEventListener(
-      'resize',
-      update
-    );
+    mq.addEventListener('change', update);
+    window.addEventListener('resize',update );
 
     return () => {
-      mq.removeEventListener(
-        'change',
-        update
-      );
-
-      window.removeEventListener(
-        'resize',
-        update
-      );
+      mq.removeEventListener('change', update);
+      window.removeEventListener('resize', update);
     };
-  }, [
-    hasRail,
-    hasSidebar,
-  ]);
+  }, [hasRail, hasSidebar]);
 
 
   return (
@@ -270,7 +222,7 @@ export const Layout = ({
       value={{
         variant,
         isMobileViewport,
-        railMode: !!rail && !!!sidebar, 
+        railMode: !!rail && !!!sidebar,
         isPhoneDevice,
         toggleSidebar,
       }}
