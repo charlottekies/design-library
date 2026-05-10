@@ -94,7 +94,7 @@ const HeaderRightSlot = styled.div`
   align-items: center;
   justify-content: center;
 
-  flex: 0 0 40px; /* 🔥 key fix */
+  flex: 0 0 40px; 
 `;
 
 /**
