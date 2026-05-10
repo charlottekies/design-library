@@ -8,7 +8,7 @@ import {
 } from 'react';
 import { color } from '../../tokens/semantic-color';
 import { space } from '../../tokens/space';
-import { Hamburger } from '../../icons/hamburger';
+import { Hamburger } from '../../icons/Hamburger';
 
 
 /* Types & Context  */
@@ -63,12 +63,12 @@ export const Layout = ({
   const [isPhoneDevice, setIsPhoneDevice] = useState(false);
 
   const [variant, setVariant] = useState<SidebarVariant>(() => {
-      if (!sidebar && rail && !isPhoneDevice) return 'rail';
-      if (sidebar && !rail && !isPhoneDevice) return 'full';
-      if (sidebar && rail && !isPhoneDevice) return 'full';
-      if (sidebar && rail && isMobileViewport) return 'rail';
-      return 'collapsed';
-    });
+    if (!sidebar && rail && !isPhoneDevice) return 'rail';
+    if (sidebar && !rail && !isPhoneDevice) return 'full';
+    if (sidebar && rail && !isPhoneDevice) return 'full';
+    if (sidebar && rail && isMobileViewport) return 'rail';
+    return 'collapsed';
+  });
 
   /* Toggle Logic */
   const toggleSidebar = () => {
@@ -142,7 +142,9 @@ export const Layout = ({
     let previousIsSmallViewport =
       mq.matches;
 
-    const update = () => {
+    const update = (
+      force = false
+    ) => {
       const isSmallViewport = mq.matches;
       const isCoarsePointer = window.matchMedia('(pointer: coarse)').matches;
       const isRealPhone = isSmallViewport && isCoarsePointer;
@@ -151,7 +153,7 @@ export const Layout = ({
       setIsMobileViewport(isSmallViewport);
       setIsPhoneDevice(isRealPhone);
 
-      if (breakpointChanged || previousIsSmallViewport === mq.matches) {
+      if (breakpointChanged || force) {
         setVariant((prev) => {
           if (isSmallViewport) {
 
@@ -176,9 +178,7 @@ export const Layout = ({
             }
 
             // sidebar-only layout
-            return prev === 'full'
-              ? 'collapsed'
-              : prev;
+            return prev === 'full' ? 'collapsed' : prev;
           }
 
           else if (!isSmallViewport) {
@@ -204,10 +204,14 @@ export const Layout = ({
       }
     };
 
+    const handleUpdate = () => {
+      update();
+    };
+
     update();
 
-    mq.addEventListener('change', update);
-    window.addEventListener('resize', update);
+    mq.addEventListener('change', handleUpdate);
+    window.addEventListener('resize', handleUpdate);
 
     return () => {
       mq.removeEventListener('change', update);

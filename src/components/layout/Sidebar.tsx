@@ -3,7 +3,7 @@ import styled from '@emotion/styled';
 import { color } from '../../tokens/semantic-color';
 import { space } from '../../tokens/space';
 import { useLayout } from './Layout';
-import { Hamburger } from '../../icons/hamburger';
+import { Hamburger } from '../../icons/Hamburger';
 
 interface SidebarProps {
   header?: ReactNode;
