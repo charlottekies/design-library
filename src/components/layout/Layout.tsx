@@ -68,8 +68,9 @@ export const Layout = ({
 
 const [variant, setVariant] =
   useState<SidebarVariant>(() => {
-    if (!sidebar && rail) return 'rail';
-    if (sidebar) return 'collapsed';
+    if (!sidebar && rail && !isPhoneDevice) return 'rail';
+    if (sidebar && !rail && !isPhoneDevice) return 'full';
+    if (sidebar && rail && !isPhoneDevice) return 'full';
     return 'collapsed';
   });
 
@@ -147,7 +148,6 @@ const [variant, setVariant] =
     !shouldRenderDefaultPhoneHeader &&
     sidebarIsCollapsed &&
     !isPhoneDevice;
-
 
  useEffect(() => {
   const mq = window.matchMedia(
