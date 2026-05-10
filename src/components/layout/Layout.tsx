@@ -208,7 +208,7 @@ export const Layout = ({
     update();
 
     mq.addEventListener('change', update);
-    window.addEventListener('resize',update );
+    window.addEventListener('resize', update);
 
     return () => {
       mq.removeEventListener('change', update);
@@ -252,57 +252,57 @@ export const Layout = ({
 
         {/* Mobile Side Drawer */}
         {isPhoneDevice && (hasSidebar || hasRail) && (
-            <>
-              <StyledMobileDrawerOverlay
-                active={
-                  variant === 'full'
-                }
-                onClick={() =>
-                  setVariant(
-                    'collapsed'
-                  )
-                }
-              />
-              <StyledMobileDrawer hasSidebar={hasSidebar}
-                data-open={
-                  variant === 'full'
-                }
-              >
-                {sidebar ? sidebar : rail}
-              </StyledMobileDrawer>
-            </>
-          )}
+          <>
+            <StyledMobileDrawerOverlay
+              active={
+                variant === 'full'
+              }
+              onClick={() =>
+                setVariant(
+                  'collapsed'
+                )
+              }
+            />
+            <StyledMobileDrawer hasSidebar={hasSidebar}
+              data-open={
+                variant === 'full'
+              }
+            >
+              {sidebar ? sidebar : rail}
+            </StyledMobileDrawer>
+          </>
+        )}
 
         {/* Header */}
         {(hasHeader || shouldRenderDefaultPhoneHeader) && (
-            <StyledHeaderArea
-              $isDefaultMobile={
-                shouldRenderDefaultPhoneHeader
+          <StyledHeaderArea
+            $isDefaultMobile={
+              shouldRenderDefaultPhoneHeader
+            }
+          >
+            <StyledHeaderContentSlot
+              $hasToggle={
+                showHeaderToggle
               }
             >
-              <StyledHeaderContentSlot
-                $hasToggle={
-                  showHeaderToggle
+              {hasHeader ? (
+                header
+              ) : (
+                <></>
+              )}
+            </StyledHeaderContentSlot>
+
+            {showHeaderToggle && (
+              <StyledHeaderToggleButton
+                onClick={
+                  toggleSidebar
                 }
               >
-                {hasHeader ? (
-                  header
-                ) : (
-                  <></>
-                )}
-              </StyledHeaderContentSlot>
-
-              {showHeaderToggle && (
-                <StyledHeaderToggleButton
-                  onClick={
-                    toggleSidebar
-                  }
-                >
-                  {menuIcon}
-                </StyledHeaderToggleButton>
-              )}
-            </StyledHeaderArea>
-          )}
+                {menuIcon}
+              </StyledHeaderToggleButton>
+            )}
+          </StyledHeaderArea>
+        )}
 
         {/* Main Content Area */}
         <StyledMainContentArea>
