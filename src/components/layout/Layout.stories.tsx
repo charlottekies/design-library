@@ -180,7 +180,7 @@ export const NoSidebar: Story = {
 export const NoSidebarWithRail: Story = {
   args: {
     header: <Placeholder label="Header" backgroundColor={color.surface.default} fontColor={color.text.primary.default} />,
-    rail: <Placeholder label="Rail" backgroundColor={color.surface.default} fontColor={color.text.primary.default}/>,
+    rail: <RailComponent />,
     children: <Placeholder label="Main Content" backgroundColor={color.surface.secondary} fontColor={color.text.primary.default}/>,
   },
   parameters: {

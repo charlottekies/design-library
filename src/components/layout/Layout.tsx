@@ -66,82 +66,12 @@ export const Layout = ({
   const [isPhoneDevice, setIsPhoneDevice] =
     useState(false);
 
-  const [variant, setVariant] =
-    useState<SidebarVariant>('full');
-
-  /* =========================
-     MEDIA / DEVICE DETECTION
-     ========================= */
-  useEffect(() => {
-    const mq = window.matchMedia(
-      `(max-width: ${MOBILE_BREAKPOINT}px)`
-    );
-
-    const update = () => {
-      const isSmallViewport = mq.matches;
-
-      // coarse pointer = finger device
-      const isCoarsePointer =
-        window.matchMedia('(pointer: coarse)')
-          .matches;
-
-      // phone-ish width
-      const isPhoneWidth =
-        window.innerWidth <= 768;
-
-      // true phone
-      const isRealPhone =
-        isPhoneWidth &&
-        isCoarsePointer;
-
-      setIsMobileViewport(isSmallViewport);
-      setIsPhoneDevice(isRealPhone);
-
-      if (isSmallViewport && hasRail) {
-        setVariant('rail');
-      }
-      if (!isSmallViewport && hasRail && hasSidebar) {
-        setVariant('full');
-      }
-
-      if (!isSmallViewport && hasRail && !hasSidebar) {
-        setVariant('rail');
-      }
-      if (isSmallViewport && hasRail && !hasSidebar) {
-        setVariant('rail');
-      }
-
-      // auto collapse on smaller screens
-      setVariant((prev) => {
-
-        if (isSmallViewport) {
-          return prev === 'full'
-            ? 'collapsed'
-            : prev;
-        }
-
-        return prev === 'collapsed'
-          ? 'full'
-          : prev;
-      });
-    };
-
-    update();
-
-    mq.addEventListener('change', update);
-    window.addEventListener('resize', update);
-
-    return () => {
-      mq.removeEventListener(
-        'change',
-        update
-      );
-      window.removeEventListener(
-        'resize',
-        update
-      );
-    };
-  }, []);
+const [variant, setVariant] =
+  useState<SidebarVariant>(() => {
+    if (!sidebar && rail) return 'rail';
+    if (sidebar) return 'collapsed';
+    return 'collapsed';
+  });
 
   /* =========================
      TOGGLE LOGIC
@@ -160,6 +90,10 @@ export const Layout = ({
         return rail
           ? 'rail'
           : 'collapsed';
+      }
+
+      if (prev === 'rail' && !sidebar) {
+        return 'rail';
       }
 
       return 'full';
@@ -213,6 +147,121 @@ export const Layout = ({
     !shouldRenderDefaultPhoneHeader &&
     sidebarIsCollapsed &&
     !isPhoneDevice;
+
+
+ useEffect(() => {
+  const mq = window.matchMedia(
+    `(max-width: ${MOBILE_BREAKPOINT}px)`
+  );
+
+  let previousIsSmallViewport =
+    mq.matches;
+
+  const update = () => {
+    const isSmallViewport =
+      mq.matches;
+
+    const isCoarsePointer =
+      window.matchMedia(
+        '(pointer: coarse)'
+      ).matches;
+
+    const isRealPhone =
+      isSmallViewport &&
+      isCoarsePointer;
+
+    setIsMobileViewport(
+      isSmallViewport
+    );
+    setIsPhoneDevice(
+      isRealPhone
+    );
+
+    const breakpointChanged =
+      previousIsSmallViewport !==
+      isSmallViewport;
+
+    if (breakpointChanged) {
+      setVariant((prev) => {
+        // ===== SMALL VIEWPORT =====
+        if (isSmallViewport) {
+          // real phone:
+          // collapse sidebar
+          if (isRealPhone) {
+            return prev === 'full'
+              ? 'collapsed'
+              : prev;
+          }
+
+          // zoomed desktop / tablet:
+          // rail should always remain
+          if (hasRail && !hasSidebar) {
+            return 'rail';
+          }
+
+            if (hasRail) {
+            return 'rail';
+          }
+
+          // sidebar-only layout
+          return prev === 'full'
+            ? 'collapsed'
+            : prev;
+        }
+
+        // ===== LARGE VIEWPORT =====
+
+        // sidebar + rail
+        if (hasSidebar && hasRail) {
+          return 'full';
+        }
+
+        // rail only
+        if (hasRail) {
+          return 'rail';
+        }
+
+        // sidebar only
+        if (hasSidebar) {
+          return 'full';
+        }
+
+        return prev;
+      });
+
+      previousIsSmallViewport =
+        isSmallViewport;
+    }
+  };
+
+  update();
+
+  mq.addEventListener(
+    'change',
+    update
+  );
+
+  window.addEventListener(
+    'resize',
+    update
+  );
+
+  return () => {
+    mq.removeEventListener(
+      'change',
+      update
+    );
+
+    window.removeEventListener(
+      'resize',
+      update
+    );
+  };
+}, [
+  hasRail,
+  hasSidebar,
+]);
+
 
   return (
     <LayoutContext.Provider
