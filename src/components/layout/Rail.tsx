@@ -6,7 +6,6 @@ import { useLayout } from './Layout';
 
 interface RailProps {
   footer?: ReactNode;
-  showCloseButton?: boolean;
   children: ReactNode;
 }
 
@@ -14,13 +13,14 @@ interface RailProps {
  * A compact right rail (icon/tool strip style)
  * fixed width: 100px
  */
-export const Rail = ({  footer, showCloseButton = true, children }: RailProps) => {
-  const { toggleSidebar } = useLayout(); // assume you add this or reuse pattern
+export const Rail = ({  footer, children }: RailProps) => {
+  const { toggleSidebar, railMode, isPhoneDevice } = useLayout(); 
+   const shouldShowClose = isPhoneDevice || !railMode
 
   return (
     <StyledRailContainer>
         <StyledRailHeader>
-        {showCloseButton && (
+        {shouldShowClose && (
           <CloseButton onClick={toggleSidebar}>
             X
           </CloseButton>

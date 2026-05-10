@@ -30,6 +30,8 @@ export interface LayoutProps {
 interface LayoutContextValue {
   variant: SidebarVariant;
   isMobileViewport: boolean;
+  isPhoneDevice: boolean;
+  railMode: boolean;
   toggleSidebar: () => void;
 }
 
@@ -274,8 +276,9 @@ export const Layout = ({
     <LayoutContext.Provider
       value={{
         variant,
-        isMobileViewport:
-          isMobileViewport,
+        isMobileViewport,
+        railMode: !!rail && !!!sidebar, 
+        isPhoneDevice,
         toggleSidebar,
       }}
     >
