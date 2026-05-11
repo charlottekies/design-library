@@ -18,14 +18,9 @@ export const Rail = ({
   footer,
   children,
 }: RailProps) => {
-  const {
-    toggleSidebar,
-    railMode,
-    isPhoneDevice,
-  } = useLayout();
+  const layoutContext = useLayout();
 
-  const shouldShowClose =
-    isPhoneDevice || !railMode;
+  const shouldShowClose = (layoutContext.isPhone)
 
   return (
     <StyledRailContainer>
@@ -35,7 +30,7 @@ export const Rail = ({
         <HeaderRightSlot>
           {shouldShowClose && (
             <CloseButton
-              onClick={toggleSidebar}
+              onClick={layoutContext.toggleSidebar}
             >
               <Hamburger />
             </CloseButton>
