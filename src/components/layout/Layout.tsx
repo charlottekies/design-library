@@ -125,6 +125,7 @@ export const Layout = ({
   return (
     <LayoutContext.Provider value={contextValue} >
       <StyledLayoutContainer
+        data-testid="layout-grid"
         isPhone={isPhone}
         isSmallViewport={isSmallViewport}
         isOpen={isOpen}
@@ -134,7 +135,8 @@ export const Layout = ({
       >
         {/* Desktop Sidebar */}
         {!isPhone && (!!sidebar || !!rail) && (
-          <StyledSidebarArea isVisible={isOpen}>
+          <StyledSidebarArea isVisible={isOpen} data-testid="layout-sidebar"
+>
             
             {/* if small viewport, render the rail if rail exists */}
             {isSmallViewport && !!rail ? rail : null}
@@ -155,10 +157,11 @@ export const Layout = ({
         {isPhone && (!!sidebar || !!rail) && (
           <>
             <StyledMobileDrawerOverlay
+              data-testid="layout-drawer-overlay"
               isOpen={isOpen}
               onClick={() => toggleSidebar}
             />
-            <StyledMobileDrawer hasSidebar={!!sidebar}
+            <StyledMobileDrawer data-testid="layout-drawer" hasSidebar={!!sidebar}
               data-open={isOpen}
             >
               {sidebar ? sidebar : rail}
@@ -168,7 +171,8 @@ export const Layout = ({
 
         {/* Header */}
         {(!!header || shouldRenderDefaultPhoneHeader) && (
-          <StyledHeaderArea>
+          <StyledHeaderArea data-testid="layout-header"
+>
             <StyledHeaderContentSlot>
               {!!header ? (
                 header
@@ -180,7 +184,9 @@ export const Layout = ({
         )}
 
         {/* Main Content Area */}
-        <StyledMainContentArea>
+        <StyledMainContentArea
+          data-testid="layout-main"
+        >
           {children}
         </StyledMainContentArea>
       </StyledLayoutContainer>
