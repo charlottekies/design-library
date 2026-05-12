@@ -15,14 +15,18 @@ export const Sidebar = ({ header, footer, children }: SidebarProps) => {
   const { toggleSidebar } = useLayout();
 
   return (
-    <StyledSidebarContainer>
+    <StyledSidebarContainer 
+      data-testid="sidebar-container"
+    >
       <StyledSidebarHeader>
         <HeaderLeftSlot>
           {header}
         </HeaderLeftSlot>
 
         <HeaderRightSlot>
-          <CloseButton onClick={toggleSidebar}>
+          <CloseButton 
+            data-testid="sidebar-toggle-btn" 
+            onClick={toggleSidebar}>
             <Hamburger />
           </CloseButton>
         </HeaderRightSlot>

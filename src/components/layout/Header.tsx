@@ -31,9 +31,10 @@ const shouldShowToggle =
   (layoutContext.isPhone && (layoutContext.hasRail || layoutContext.hasSidebar)) // Condition 2 
 
   return (
-    <StyledHeader>
+    <StyledHeader data-testid="header-container">
       {shouldShowToggle && (
         <StyledToggleButton
+          data-testid="header-toggle-btn"
           type="button"
           onClick={layoutContext.toggleSidebar}
           aria-label="Toggle navigation"
