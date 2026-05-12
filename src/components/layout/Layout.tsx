@@ -9,6 +9,7 @@ import {
 import { color } from '../../tokens/semantic-color';
 import { space } from '../../tokens/space';
 import { Hamburger } from '../../icons/Hamburger';
+import { Header } from './Header';
 
 /* Types & Context  */
 
@@ -42,6 +43,9 @@ export const useLayout = () => {
     );
   return ctx;
 };
+
+/** A default header to be rendered in the Layout when viewed from a phone, if one is not provided */
+const DefaultHeader: ReactNode = <Header />; 
 
 /* Default Exported Layout Component */
 
@@ -130,7 +134,7 @@ export const Layout = ({
         isPhone={isPhone}
         isSmallViewport={isSmallViewport}
         isOpen={isOpen}
-        hasHeader={!!header ||shouldRenderDefaultPhoneHeader}
+        hasHeader={!!header}
         hasSidebar={!!sidebar}
         hasRail={!!rail}
       >
@@ -170,47 +174,19 @@ export const Layout = ({
 
         {/* Header */}
         {(!!header || shouldRenderDefaultPhoneHeader) && (
-          <StyledHeaderArea
-            $isDefaultMobile={
-              shouldRenderDefaultPhoneHeader
-            }
-          >
-            <StyledHeaderContentSlot
-              $hasToggle={
-                !isOpen && (!!rail || !!sidebar)
-              }
-            >
+          <StyledHeaderArea>
+            <StyledHeaderContentSlot>
               {!!header ? (
                 header
               ) : (
-                <></>
+                DefaultHeader
               )}
             </StyledHeaderContentSlot>
-
-            {!isOpen && (
-              <StyledHeaderToggleButton
-                onClick={
-                  toggleSidebar
-                }
-              >
-                {/* <Hamburger /> */}
-              </StyledHeaderToggleButton>
-            )}
           </StyledHeaderArea>
         )}
 
         {/* Main Content Area */}
         <StyledMainContentArea>
-          {((!!rail || !!sidebar) && !isOpen && !!!header) && (
-            <StyledMainContentToggle
-              onClick={
-                toggleSidebar
-              }
-            >
-              icons
-            </StyledMainContentToggle>
-          )}
-
           {children}
         </StyledMainContentArea>
       </StyledLayoutContainer>
@@ -279,15 +255,14 @@ const StyledLayoutContainer = styled.div<{
      GRID ROWS
      ========================= */
   grid-template-rows: ${(p) => {
-    // no provided header
-    // AND no default phone header
-    if (!p.hasHeader) {
-      return '1fr';
-    }
-
-    // phone header
+    // provide a default phone header, make space for a default header row
     if (p.isPhone && !p.hasHeader) {
       return '50px 1fr';
+    }
+
+    // no provided header,  
+    if (!p.hasHeader) {
+      return '1fr';
     }
 
     if (p.isPhone && p.hasHeader) {
@@ -349,42 +324,11 @@ const StyledHeaderArea = styled.header<{
   border-bottom: 1px solid ${color.border.primary};
 `;
 
-const StyledHeaderContentSlot = styled.div<{
-  $hasToggle: boolean;
-}>`
+const StyledHeaderContentSlot = styled.div`
   flex: 1;
   width: 100%;
   height: 100%;
   overflow: hidden;
-      padding-right: ${(p) =>
-    p.$hasToggle ? '60px' : '0'};
-
-  & > * {
-    display: flex;
-    width: 100%;
-    height: 100%;
-    padding-left: ${(p) =>
-    p.$hasToggle ? '60px' : '0'};
-  }
-`;
-
-const StyledHeaderToggleButton = styled.button`
-  position: absolute;
-  left: 0;
-  top: 0;
-  bottom: 0;
-  width: 60px;
-  z-index: 10;
-  background: transparent;
-  border: none;
-  cursor: pointer;
-`;
-
-const StyledMainContentToggle = styled.button`
-  position: absolute;
-  top: ${space.space08};
-  left: ${space.space08};
-  z-index: 50;
 `;
 
 const StyledSidebarArea = styled.aside<{

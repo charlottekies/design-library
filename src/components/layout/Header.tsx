@@ -26,17 +26,9 @@ export const Header = ({
 }: HeaderProps) => {
   const layoutContext = useLayout();
 
-// const shouldShowToggle = () => {
-//   if (layoutContext.hasRail && layoutContext.hasSidebar) return false;
-    
-//   else  if (!layoutContext.isOpen && layoutContext.hasSidebar) {
-//     return true;
-//   }
-// }
-
 const shouldShowToggle = 
   (!layoutContext.hasRail && layoutContext.hasSidebar && !layoutContext.isOpen) || // condition 1
-  (layoutContext.isPhone) // Condition 2 (else if)
+  (layoutContext.isPhone && (layoutContext.hasRail || layoutContext.hasSidebar)) // Condition 2 
 
   return (
     <StyledHeader>
