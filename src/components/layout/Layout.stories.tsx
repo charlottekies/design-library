@@ -58,7 +58,6 @@ export const Default: Story = {
     sidebar: <MySidebar />,
     children: <Placeholder label="Main Content" backgroundColor={color.surface.secondary} fontColor={color.text.primary.default} />,
   },
-  parameters: { viewport: { defaultViewport: 'desktop' } },
 };
 
 /* ------------------------------------

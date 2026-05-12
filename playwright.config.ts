@@ -15,9 +15,9 @@ export default defineConfig({
 
   use: {
     baseURL: 'http://127.0.0.1:6006',
-    trace: 'retain-on-failure',
-    screenshot: 'only-on-failure',
-    video: 'retain-on-failure',
+    trace: 'on',
+    screenshot: 'on',
+    video: 'on',
   },
 
   projects: [

@@ -137,19 +137,13 @@ export const Layout = ({
         {!isPhone && (!!sidebar || !!rail) && (
           <StyledSidebarArea isVisible={isOpen} data-testid="layout-sidebar"
 >
-            
-            {/* if small viewport, render the rail if rail exists */}
-            {isSmallViewport && !!rail ? rail : null}
-
-            {/* if not small viewport, render the sidebar if both sidebar and rail exist */}
-            {!isSmallViewport && (!!sidebar && !!rail) ? sidebar : null}
-
-            {/* if not small viewport, render the rail if sidebar does not exist */}
-            {!isSmallViewport && (!!!sidebar && !!rail) ? rail : null}
-
-            {/* if not small viewport, render the sidebar if rail does not exist */}
-            {!isSmallViewport && (!!sidebar && !!!rail) ? sidebar : null}
-
+            {isSmallViewport ? (
+              rail ?? null
+            ) : sidebar && rail ? (
+              isOpen ? sidebar : rail
+            ) : (
+              sidebar ?? rail ?? null
+            )}
           </StyledSidebarArea>
         )}
 

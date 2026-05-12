@@ -12,7 +12,9 @@ interface SidebarProps {
 }
 
 export const Sidebar = ({ header, footer, children }: SidebarProps) => {
-  const { toggleSidebar } = useLayout();
+  const layoutContext = useLayout();
+  const shouldShowClose = (layoutContext.isPhone || (layoutContext.isOpen))
+
 
   return (
     <StyledSidebarContainer 
@@ -24,11 +26,15 @@ export const Sidebar = ({ header, footer, children }: SidebarProps) => {
         </HeaderLeftSlot>
 
         <HeaderRightSlot>
+        {shouldShowClose && (
           <CloseButton 
             data-testid="sidebar-toggle-btn" 
-            onClick={toggleSidebar}>
+            onClick={layoutContext.toggleSidebar}>
             <Hamburger />
           </CloseButton>
+        )
+        }
+         
         </HeaderRightSlot>
       </StyledSidebarHeader>
 
