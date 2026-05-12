@@ -17,7 +17,6 @@ export interface LayoutProps {
   sidebar?: ReactNode;
   rail?: ReactNode;
   children: ReactNode;
-  icons?: { menu?: ReactNode };
 }
 
 interface LayoutContextType {
@@ -43,16 +42,11 @@ export const useLayout = () => {
   return ctx;
 };
 
-/** A default header to be rendered in the Layout when viewed from a phone, if one is not provided */
-const DefaultHeader: ReactNode = <Header />; 
-
 /* Default Exported Layout Component */
-
 export const Layout = ({
   header,
   sidebar,
   rail,
-  icons,
   children,
 }: LayoutProps) => {
   /** State variables that are used to determine what shape the Layout should take at any given time. */
@@ -193,8 +187,10 @@ export const Layout = ({
   );
 };
 
-/* Styled Components for Internal Use */
+/** A default header to be rendered in the Layout when viewed from a phone, if one is not provided */
+const DefaultHeader: ReactNode = <Header />; 
 
+/* Styled Components for Internal Use */
 const StyledLayoutContainer = styled.div<{
   isPhone: boolean;
   isSmallViewport: boolean;
