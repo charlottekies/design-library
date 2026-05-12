@@ -22,6 +22,7 @@ export interface LayoutProps {
 interface LayoutContextType {
   isOpen: boolean;
   isSmallViewport: boolean; // Based on width (CSS breakpoint)
+  hasHeader: boolean;
   isPhone: boolean;          // Based on width + Touch (Physical phone)
   hasSidebar: boolean;
   hasRail: boolean;

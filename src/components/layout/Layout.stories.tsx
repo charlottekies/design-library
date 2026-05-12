@@ -18,7 +18,6 @@ const metadata: Meta<typeof Layout> = {
   argTypes: {
     header: { control: false },
     sidebar: { control: false },
-    icons: { control: false },
   },
 };
 
