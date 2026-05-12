@@ -13,7 +13,6 @@ interface SidebarProps {
 
 export const Sidebar = ({ header, footer, children }: SidebarProps) => {
   const layoutContext = useLayout();
-  const shouldShowClose = (layoutContext.isPhone || (layoutContext.isOpen))
 
 
   return (
@@ -26,15 +25,11 @@ export const Sidebar = ({ header, footer, children }: SidebarProps) => {
         </HeaderLeftSlot>
 
         <HeaderRightSlot>
-        {shouldShowClose && (
           <CloseButton 
             data-testid="sidebar-toggle-btn" 
             onClick={layoutContext.toggleSidebar}>
             <Hamburger />
           </CloseButton>
-        )
-        }
-         
         </HeaderRightSlot>
       </StyledSidebarHeader>
 
