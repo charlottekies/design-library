@@ -89,9 +89,6 @@ test.describe(
                         'grid-template-columns',
                         '100px 1300px'
                     );
-                    await page.waitForTimeout(3000);
-
-
                 const rail = page.getByTestId('rail-container');
                 
                 await expect(rail).toBeVisible();
@@ -120,7 +117,6 @@ test.describe(
     () => {
         test(
             'Renders expected elements on load',
-
             async ({ page, isMobile }) => {
                 test.skip(!isMobile, 'This interaction is mobile-specific');
                 await page.goto(
@@ -142,10 +138,37 @@ test.describe(
                 expect(c).toHaveLength(1);
             }
         );
+        test(
+            'Mobile Sidebar toggle button behavior',
+            async ({ page, isMobile }) => {
+                test.skip(!isMobile, 'This interaction is mobile-specific');
+                await page.goto(
+                    story('with-rail')
+                );
+
+                const headerToggle = page.getByTestId('header-toggle-btn');
+                await expect(headerToggle).toBeVisible();
+
+                headerToggle.click();
+
+                const drawerOverlay = page.getByTestId('layout-drawer-overlay');
+                await expect(drawerOverlay).toBeVisible();
+
+                const sidebar = page.getByTestId('sidebar-container');
+                const sidebarToggleBtn = sidebar.getByTestId('sidebar-toggle-btn');
+                await expect(sidebarToggleBtn).toBeVisible();
+                const rail = page.getByTestId('rail-container');
+                
+                await expect(rail).not.toBeVisible();
+                
+                await sidebarToggleBtn.click();
+
+                await expect(drawerOverlay).not.toBeVisible();
+
+            }
+        );
     }
 );
-
-
 
 //
 // =====================================================
