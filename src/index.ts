@@ -4,6 +4,7 @@ export { Button } from "./components/buttons/Button";
 export { color } from "./tokens/semantic-color";
 export { border } from "./tokens/border";
 export { space } from "./tokens/space";
+export { layers } from "./tokens/layers";
 
 /* components */ 
 export { Layout } from "./components/layout/Layout";

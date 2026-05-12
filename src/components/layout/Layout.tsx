@@ -7,8 +7,7 @@ import {
   useState,
 } from 'react';
 import { color } from '../../tokens/semantic-color';
-import { space } from '../../tokens/space';
-import { Hamburger } from '../../icons/Hamburger';
+import { layers } from '../../tokens/layers';
 import { Header } from './Header';
 
 /* Types & Context  */
@@ -357,7 +356,7 @@ const StyledMobileDrawer = styled.aside<{
   width: ${(p) => p.hasSidebar ? '300px' : `100px`};
   height: 100vh;
   background: white;
-  z-index: 1000;
+  z-index: ${layers.drawer};
   transform: translateX(-100%);
   transition: transform 0.3s ease;
 
@@ -374,5 +373,5 @@ const StyledMobileDrawerOverlay = styled.div<{
   position: fixed;
   inset: 0;
   background: rgba(0, 0, 0, 0.4);
-  z-index: 999;
+  z-index: ${layers.drawer};
 `;
