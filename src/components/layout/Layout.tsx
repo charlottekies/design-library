@@ -52,7 +52,7 @@ export const Layout = ({
   icons,
   children,
 }: LayoutProps) => {
-  // 1. STATE: The "source of truth" for the layout
+  /** State variables that are used to determine what shape the Layout should take at any given time. */
   const [isOpen, setIsOpen] = useState(false);
   const [isSmallViewport, setIsSmallViewport] = useState(false);
   const mq = window.matchMedia('(max-width: 786px)');
@@ -60,14 +60,15 @@ export const Layout = ({
 
   const isPhone = mq.matches && pointerMq.matches;
 
-  // 2. Functions
+  /** Functions like toggleSidebar allow menu buttons to toggle the open state of the sidebar.
+   * This function is broadcasted via a context provider to all child components of this component */ 
   const toggleSidebar = () => {
-    console.log(`toggle sidebar clicked: ${isOpen}`)
     setIsOpen((prev) => !prev);
-    console.log(`toggle sidebar clicked complete: ${isOpen}`)
   }
 
-  // 3. Use Effect: Track the environment size
+  /**
+   * Tracks and responds to changes in the browser size
+   * */
   useEffect(() => {
     const mq = window.matchMedia(`(max-width: 786px)`);
 
@@ -80,6 +81,9 @@ export const Layout = ({
     return () => mq.removeEventListener('change', update);
   }, []);
 
+  /**
+   * Sets the open/closed position of the sidebar/rail.
+   *  */ 
   useEffect(() => {
   // PHONE RULES (highest priority)
     if (isPhone) {
@@ -103,7 +107,9 @@ export const Layout = ({
     }
   }, [isPhone, isSmallViewport, sidebar, rail]);
 
-  // 4. Broadcast: This object is what children of this component (header/sidebar/rail) will be able to see
+  /** 
+   *  This broadcasted object is what children of this component (header/sidebar/rail) will be able to see
+   */
   const contextValue = {
     isOpen,
     isSmallViewport,
@@ -114,7 +120,8 @@ export const Layout = ({
     toggleSidebar: () => toggleSidebar(),
   };
 
-  // 4. Derived state
+  /** Derived variable that derives from the presence of a header and the type of device the user is browsing on
+   * whether a default header should be provided */ 
   const shouldRenderDefaultPhoneHeader = isPhone && !!!header;
 
   return (
@@ -132,13 +139,15 @@ export const Layout = ({
           <StyledSidebarArea isVisible={isOpen}>
             
             {/* if small viewport, render the rail if rail exists */}
-           {isSmallViewport && !!rail ? rail : null}
+            {isSmallViewport && !!rail ? rail : null}
 
-            {/* if not small viewport, render the sidebar if sidebar exists */}
+            {/* if not small viewport, render the sidebar if both sidebar and rail exist */}
             {!isSmallViewport && (!!sidebar && !!rail) ? sidebar : null}
 
+            {/* if not small viewport, render the rail if sidebar does not exist */}
             {!isSmallViewport && (!!!sidebar && !!rail) ? rail : null}
 
+            {/* if not small viewport, render the sidebar if rail does not exist */}
             {!isSmallViewport && (!!sidebar && !!!rail) ? sidebar : null}
 
           </StyledSidebarArea>
