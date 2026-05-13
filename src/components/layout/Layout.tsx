@@ -29,10 +29,7 @@ interface LayoutContextType {
   toggleSidebar: () => void;
 }
 
-const LayoutContext =
-  createContext<LayoutContextType | null>(
-    null
-  );
+const LayoutContext = createContext<LayoutContextType | null>(null);
 
 export const useLayout = () => {
   const ctx = useContext(LayoutContext);
