@@ -309,7 +309,7 @@ const StyledLayoutContainer = styled.div<{
     if (!p.hasHeader) {
       return '1fr';
     }
-
+  
   }};
 
   /* =========================

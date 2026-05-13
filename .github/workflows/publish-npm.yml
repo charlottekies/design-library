@@ -1,0 +1,48 @@
+name: Publish npm package
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Check if src changed
+        id: changes
+        uses: dorny/paths-filter@v3
+        with:
+          filters: |
+            src:
+              - 'src/**'
+
+      - name: Setup Node
+        if: steps.changes.outputs.src == 'true'
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          registry-url: "https://registry.npmjs.org"
+
+      - name: Install
+        if: steps.changes.outputs.src == 'true'
+        run: npm ci
+
+      - name: Build
+        if: steps.changes.outputs.src == 'true'
+        run: npm run build
+
+      - name: Bump version
+        # If there are changes to the source directory
+        if: steps.changes.outputs.src == 'true'
+        # create a new version but don't create a new github tag
+        run: npm version patch --no-git-tag-version
+
+      - name: Publish
+        if: steps.changes.outputs.src == 'true'
+        run: npm publish --access public
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_DEPLOY_KEY }}
