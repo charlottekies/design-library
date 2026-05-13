@@ -135,21 +135,6 @@ export const Layout = ({
     if (sidebar || rail) {
       setIsOpen(true);
     }
-
-    
-    // if (sidebar && rail) {
-    //   setIsOpen(true);
-    //   return;
-    // }
-
-    // if (sidebar && !rail) {
-    //   setIsOpen(!isSmallViewport); // collapse on small, open on large
-    //   return;
-    // }
-
-    // if (!sidebar && rail) {
-    //   setIsOpen(true);
-    // }
   }, [isPhone, isSmallViewport, sidebar, rail]);
 
   /** 
@@ -182,15 +167,7 @@ export const Layout = ({
       >
         {/* Desktop Sidebar */}
         {!isPhone && (!!sidebar || !!rail) && (
-          <StyledSidebarArea isVisible={isOpen} data-testid="layout-sidebar"
->
-            {/* {isSmallViewport ? (
-              rail ?? null
-            ) : sidebar && rail ? (
-              isOpen ? sidebar : rail
-            ) : (
-              sidebar ?? rail ?? null
-            )} */}
+          <StyledSidebarArea isVisible={isOpen} data-testid="layout-sidebar">
              {renderedSidebarElement()}
           </StyledSidebarArea>
         )}
