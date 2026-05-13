@@ -62,7 +62,6 @@ export const Layout = ({
   }
 
   const renderedSidebarElement = () => {
-
     if (!isSmallViewport) {
       if (sidebar && isOpen) {
         return sidebar;
@@ -74,6 +73,7 @@ export const Layout = ({
         return rail
       }
     }
+
     if (isSmallViewport) {
       if (!!rail && !!sidebar) {
         if (!isOpen) {
@@ -94,6 +94,7 @@ export const Layout = ({
       if (!!rail && !!!sidebar) {
         return rail;
       }
+      
       return null;
     }
   }
