@@ -7,36 +7,29 @@ import {
   useState,
 } from 'react';
 import { color } from '../../tokens/semantic-color';
-import { space } from '../../tokens/space';
-import { Hamburger } from '../../icons/Hamburger';
+import { layers } from '../../tokens/layers';
+import { Header } from '../header/Header';
 
 /* Types & Context  */
-
-export type SidebarVariant =
-  | 'full'
-  | 'rail'
-  | 'collapsed';
 
 export interface LayoutProps {
   header?: ReactNode;
   sidebar?: ReactNode;
   rail?: ReactNode;
   children: ReactNode;
-  icons?: { menu?: ReactNode };
 }
 
-interface LayoutContextValue {
-  variant: SidebarVariant;
-  isMobileViewport: boolean;
-  isPhoneDevice: boolean;
-  railMode: boolean;
+interface LayoutContextType {
+  isOpen: boolean;
+  isSmallViewport: boolean; // Based on width (CSS breakpoint)
+  hasHeader: boolean;
+  isPhone: boolean;          // Based on width + Touch (Physical phone)
+  hasSidebar: boolean;
+  hasRail: boolean;
   toggleSidebar: () => void;
 }
 
-const LayoutContext =
-  createContext<LayoutContextValue | null>(
-    null
-  );
+const LayoutContext = createContext<LayoutContextType | null>(null);
 
 export const useLayout = () => {
   const ctx = useContext(LayoutContext);
@@ -48,227 +41,145 @@ export const useLayout = () => {
 };
 
 /* Default Exported Layout Component */
-
 export const Layout = ({
   header,
   sidebar,
   rail,
   children,
-  icons,
 }: LayoutProps) => {
-  const MOBILE_BREAKPOINT = 768;
+  /** State variables that are used to determine what shape the Layout should take at any given time. */
+  const [isOpen, setIsOpen] = useState(false);
+  const [isSmallViewport, setIsSmallViewport] = useState(false);
+  const mq = window.matchMedia('(max-width: 786px)');
+  const pointerMq = window.matchMedia('(pointer: coarse)');
 
-  const [isMobileViewport, setIsMobileViewport] = useState(false);
-  const [isPhoneDevice, setIsPhoneDevice] = useState(false);
+  const isPhone = mq.matches && pointerMq.matches;
 
-  const [variant, setVariant] = useState<SidebarVariant>(() => {
-    if (!sidebar && rail && !isPhoneDevice) return 'rail';
-    if (sidebar && !rail && !isPhoneDevice) return 'full';
-    if (sidebar && rail && !isPhoneDevice) return 'full';
-    if (sidebar && rail && isMobileViewport) return 'rail';
-    return 'collapsed';
-  });
-
-  /* Toggle Logic */
+  /** Functions like toggleSidebar allow menu buttons to toggle the open state of the sidebar.
+   * This function is broadcasted via a context provider to all child components of this component */ 
   const toggleSidebar = () => {
-    setVariant((prev) => {
-      // REAL PHONE → drawer open/close
-      if (isPhoneDevice) {
-        return prev === 'full'
-          ? 'collapsed'
-          : 'full';
-      }
+    setIsOpen((prev) => !prev);
+  }
 
-      // DESKTOP / RESIZED WINDOW
-      if (prev === 'full') {
+  const renderedSidebarElement = () => {
+    if (!isSmallViewport) {
+      if (sidebar && isOpen) {
+        return sidebar;
+      }
+      if (sidebar && rail && !isOpen) {
+        return rail;
+      } 
+      if (!sidebar && rail) {
         return rail
-          ? 'rail'
-          : 'collapsed';
+      }
+    }
+
+    if (isSmallViewport) {
+      if (!!rail && !!sidebar) {
+        if (!isOpen) {
+          return rail;
+        } else {
+          return sidebar;
+        }
       }
 
-      if (prev === 'rail' && !sidebar) {
-        return 'rail';
+      if (!!sidebar && !!!rail) {
+        if (isOpen) {
+          return sidebar;
+        } else {
+          return null;
+        }
       }
 
-      return 'full';
-    });
-  };
-
-  /* Derived State */
-
-  const menuIcon = icons?.menu ?? <Hamburger />
-  const hasSidebar = !!sidebar;
-  const hasHeader = !!header;
-  const hasRail = !!rail;
-  const isSidebarCollapsed = variant === 'collapsed';
-  const shouldRenderDefaultPhoneHeader = !hasHeader && isPhoneDevice && hasSidebar;
-
-  /* =========================
-     HEADER TOGGLE RULE
-     FIXED:
-     - ALWAYS in mobile header
-     - Desktop only when collapsed + no rail
-     ========================= */
-  /**
-   * Determines whether a toggle button should be displayed in a header component
-   */
-  const showHeaderToggle =
-    (isPhoneDevice && (hasSidebar || hasRail)) ? true :
-      (hasSidebar || hasRail) && (shouldRenderDefaultPhoneHeader || (hasHeader && isSidebarCollapsed));
+      if (!!rail && !!!sidebar) {
+        return rail;
+      }
+      
+      return null;
+    }
+  }
 
   /**
-   * Determines whether a toggle should be displayed in the main content section. 
-   * Eventually I think this should be the responsibility of the parent. 
-   * For now, this is an opinionated layout and places menu icons for you
-   */
-  const showMainContentToggle =
-    hasSidebar &&
-    !hasHeader &&
-    !shouldRenderDefaultPhoneHeader &&
-    isSidebarCollapsed &&
-    !isPhoneDevice;
+   * Tracks and responds to changes in the browser size
+   * */
+  useEffect(() => {
+    const mq = window.matchMedia(`(max-width: 786px)`);
 
-  /* UseEffects */
+    const update = () => {
+      setIsSmallViewport(mq.matches);
+    };
+
+    update(); // Run once on mount
+    mq.addEventListener('change', update);
+    return () => mq.removeEventListener('change', update);
+  }, []);
+
+  /**
+   * Sets the open/closed position of the sidebar/rail.
+   *  */ 
+  useEffect(() => {
+  // PHONE RULES (highest priority)
+    if (isPhone) {
+      setIsOpen(false);
+      return;
+    }
+
+    // DESKTOP / TABLET RULES
+    if (isSmallViewport) {
+      setIsOpen(false);
+      return;
+    } 
+
+    if (sidebar || rail) {
+      setIsOpen(true);
+    }
+  }, [isPhone, isSmallViewport, sidebar, rail]);
 
   /** 
-   * Listens for changes to the viewport size and updates the state (variant) of the sidebar panel
+   *  This broadcasted object is what children of this component (header/sidebar/rail) will be able to see
    */
-  useEffect(() => {
-    const mq = window.matchMedia(
-      `(max-width: ${MOBILE_BREAKPOINT}px)`
-    );
+  const contextValue = {
+    isOpen,
+    isSmallViewport,
+    isPhone,
+    hasSidebar: !!sidebar,
+    hasRail: !!rail,
+    hasHeader: !!header,
+    toggleSidebar: () => toggleSidebar(),
+  };
 
-    let previousIsSmallViewport =
-      mq.matches;
-
-    const update = (
-      force = false
-    ) => {
-      const isSmallViewport = mq.matches;
-      const isCoarsePointer = window.matchMedia('(pointer: coarse)').matches;
-      const isRealPhone = isSmallViewport && isCoarsePointer;
-      const breakpointChanged = previousIsSmallViewport !== isSmallViewport;
-
-      setIsMobileViewport(isSmallViewport);
-      setIsPhoneDevice(isRealPhone);
-
-      if (breakpointChanged || force) {
-        setVariant((prev) => {
-          if (isSmallViewport) {
-
-            // collapse sidebar on phone
-            if (isRealPhone) {
-              return prev === 'full'
-                ? 'collapsed'
-                : prev;
-            }
-
-            if (hasRail && hasSidebar) {
-              return 'rail';
-            }
-
-            // large desktop / tablet: rail should always remain
-            if (hasRail && !hasSidebar) {
-              return 'rail';
-            }
-
-            if (hasRail) {
-              return 'rail';
-            }
-
-            // sidebar-only layout
-            return prev === 'full' ? 'collapsed' : prev;
-          }
-
-          else if (!isSmallViewport) {
-
-            if (hasSidebar && hasRail) {
-              return 'full';
-            }
-
-            // rail only
-            if (hasRail) {
-              return 'rail';
-            }
-
-            // sidebar only
-            if (hasSidebar) {
-              return 'full';
-            }
-          }
-          return prev;
-        });
-
-        previousIsSmallViewport = isSmallViewport;
-      }
-    };
-
-    const handleUpdate = () => {
-      update();
-    };
-
-    update();
-
-    mq.addEventListener('change', handleUpdate);
-    window.addEventListener('resize', handleUpdate);
-
-    return () => {
-      mq.removeEventListener('change', handleUpdate);
-      window.removeEventListener('resize', handleUpdate);
-    };
-  }, [hasRail, hasSidebar]);
-
+  /** Derived variable that derives from the presence of a header and the type of device the user is browsing on
+   * whether a default header should be provided */ 
+  const shouldRenderDefaultPhoneHeader = isPhone && !!!header;
 
   return (
-    <LayoutContext.Provider
-      value={{
-        variant,
-        isMobileViewport,
-        railMode: !!rail && !!!sidebar,
-        isPhoneDevice,
-        toggleSidebar,
-      }}
-    >
+    <LayoutContext.Provider value={contextValue} >
       <StyledLayoutContainer
-        variant={variant}
-        isPhoneDevice={isPhoneDevice}
-        isMobileViewport={isMobileViewport}
-        hasHeader={
-          hasHeader ||
-          shouldRenderDefaultPhoneHeader
-        }
-        hasSidebar={hasSidebar}
-        hasRail={hasRail}
+        data-testid="layout-grid"
+        isPhone={isPhone}
+        isSmallViewport={isSmallViewport}
+        isOpen={isOpen}
+        hasHeader={!!header}
+        hasSidebar={!!sidebar}
+        hasRail={!!rail}
       >
         {/* Desktop Sidebar */}
-        {!isPhoneDevice && (sidebar || rail) && (
-          <StyledSidebarArea
-            isVisible={variant !== 'collapsed' || !!rail}
-          >
-            {/* Render based on variant */}
-            {variant === 'rail' && rail && rail}
-
-            {variant === 'full' && sidebar && sidebar}
+        {!isPhone && (!!sidebar || !!rail) && (
+          <StyledSidebarArea isVisible={isOpen} data-testid="layout-sidebar">
+             {renderedSidebarElement()}
           </StyledSidebarArea>
         )}
 
         {/* Mobile Side Drawer */}
-        {isPhoneDevice && (hasSidebar || hasRail) && (
+        {isPhone && (!!sidebar || !!rail) && (
           <>
             <StyledMobileDrawerOverlay
-              active={
-                variant === 'full'
-              }
-              onClick={() =>
-                setVariant(
-                  'collapsed'
-                )
-              }
+              data-testid="layout-drawer-overlay"
+              isOpen={isOpen}
+              onClick={() => toggleSidebar}
             />
-            <StyledMobileDrawer hasSidebar={hasSidebar}
-              data-open={
-                variant === 'full'
-              }
+            <StyledMobileDrawer data-testid="layout-drawer" hasSidebar={!!sidebar}
+              data-open={isOpen}
             >
               {sidebar ? sidebar : rail}
             </StyledMobileDrawer>
@@ -276,48 +187,23 @@ export const Layout = ({
         )}
 
         {/* Header */}
-        {(hasHeader || shouldRenderDefaultPhoneHeader) && (
-          <StyledHeaderArea
-            $isDefaultMobile={
-              shouldRenderDefaultPhoneHeader
-            }
-          >
-            <StyledHeaderContentSlot
-              $hasToggle={
-                showHeaderToggle
-              }
-            >
-              {hasHeader ? (
+        {(!!header || shouldRenderDefaultPhoneHeader) && (
+          <StyledHeaderArea data-testid="layout-header"
+>
+            <StyledHeaderContentSlot>
+              {!!header ? (
                 header
               ) : (
-                <></>
+                DefaultHeader
               )}
             </StyledHeaderContentSlot>
-
-            {showHeaderToggle && (
-              <StyledHeaderToggleButton
-                onClick={
-                  toggleSidebar
-                }
-              >
-                {menuIcon}
-              </StyledHeaderToggleButton>
-            )}
           </StyledHeaderArea>
         )}
 
         {/* Main Content Area */}
-        <StyledMainContentArea>
-          {showMainContentToggle && (
-            <StyledMainContentToggle
-              onClick={
-                toggleSidebar
-              }
-            >
-              {menuIcon}
-            </StyledMainContentToggle>
-          )}
-
+        <StyledMainContentArea
+          data-testid="layout-main"
+        >
           {children}
         </StyledMainContentArea>
       </StyledLayoutContainer>
@@ -325,12 +211,16 @@ export const Layout = ({
   );
 };
 
-/* Styled Components for Internal Use */
+/** A default header to be rendered in the Layout when viewed from a phone, if one is not provided */
+const DefaultHeader: ReactNode = <Header />; 
+const SIDEBAR_WIDTH = '300px';
+const RAIL_WIDTH = '100px';
 
+/* Styled Components for Internal Use */
 const StyledLayoutContainer = styled.div<{
-  variant: SidebarVariant;
-  isPhoneDevice: boolean;
-  isMobileViewport: boolean;
+  isPhone: boolean;
+  isSmallViewport: boolean;
+  isOpen: boolean;
   hasHeader: boolean;
   hasSidebar: boolean;
   hasRail: boolean;
@@ -343,74 +233,98 @@ const StyledLayoutContainer = styled.div<{
      GRID COLUMNS
      ========================= */
   grid-template-columns: ${(p) => {
-    // PHONE: drawer mode, no grid sidebar column
-    if (p.isPhoneDevice) {
-      return '1fr';
+    // Phone = drawer only
+    if (p.isPhone) {
+      return 'minmax(0, 1fr)';
     }
 
-    // NO NAV AT ALL
+
+     // NEW: no sidebar + no rail
     if (!p.hasSidebar && !p.hasRail) {
-      return '0px 1fr';
+      return '0px minmax(0, 1fr)';
+    } 
+
+    // Small viewport behavior
+    if (p.isSmallViewport) {
+      // Sidebar + Rail
+      if (p.hasSidebar && p.hasRail) {
+        return p.isOpen
+          ? `${SIDEBAR_WIDTH} minmax(0, 1fr)`
+          : `${RAIL_WIDTH} minmax(0, 1fr)`;
+      }
+
+      // Rail only
+      if (!p.hasSidebar && p.hasRail) {
+        return `${RAIL_WIDTH} minmax(0, 1fr)`;
+      }
+
+      // Sidebar only
+      if (p.hasSidebar && !p.hasRail) {
+        return p.isOpen
+          ? `${SIDEBAR_WIDTH} minmax(0, 1fr)`
+          : `0px minmax(0, 1fr)`;
+      }
+
+      return 'minmax(0, 1fr)';
     }
 
-    // RAIL MODE (explicit or fallback when no sidebar exists)
-    if (p.variant === 'rail') {
-      return '100px 1fr';
+    // =========================
+    // Desktop behavior
+    // =========================
+
+    // Sidebar + Rail
+    if (p.hasSidebar && p.hasRail) {
+      return p.isOpen
+        ? `${SIDEBAR_WIDTH} minmax(0, 1fr)`
+        : `100px minmax(0, 1fr)`;
     }
 
-    // FULL SIDEBAR MODE
-    if (p.variant === 'full') {
-      return '300px 1fr';
+    // Rail only
+    if (!p.hasSidebar && p.hasRail) {
+      return `${RAIL_WIDTH} minmax(0, 1fr)`;
     }
 
-    // COLLAPSED → still reserve layout stability (prevents shift bugs)
-    return '0px 1fr';
+    // Sidebar only
+    if (p.hasSidebar && !p.hasRail) {
+      return p.isOpen
+        ? `${SIDEBAR_WIDTH} minmax(0, 1fr)`
+        : `0px minmax(0, 1fr)`;
+    }
+
+    return 'minmax(0, 1fr)';
   }};
 
   /* =========================
      GRID ROWS
      ========================= */
   grid-template-rows: ${(p) => {
-    // no provided header
-    // AND no default phone header
+    if (p.isPhone) {
+      if (p.hasHeader) {
+        return '80px 1fr';
+      } else {
+        return '50px 1fr';
+      }
+    }
+    
     if (!p.hasHeader) {
       return '1fr';
     }
 
-    // phone header
-    if (p.isPhoneDevice && !p.hasHeader) {
-      return '50px 1fr';
-    }
-
-    if (p.isPhoneDevice && p.hasHeader) {
-      return '80px 1fr';
-    }
-
-    // desktop / resized browser
-    return '80px 1fr';
   }};
 
   /* =========================
      GRID AREAS
      ========================= */
   grid-template-areas: ${(p) => {
-    // REAL PHONE
-    // sidebar is drawer-only
-
-    if (p.isPhoneDevice) {
-
-      return p.hasHeader
-        ? `
-          "header"
-          "main"
-        `
-        : `
-          "header"
-          "main"
-        `;
+    // Phone = no sidebar column
+    if (p.isPhone) {
+      return `
+        "header"
+        "main"
+      `;
     }
 
-    // DESKTOP / RESIZED WINDOW
+    // Always maintain 2-column grid on desktop/tablet
     return p.hasHeader
       ? `
         "sidebar header"
@@ -421,7 +335,6 @@ const StyledLayoutContainer = styled.div<{
       `;
   }};
 `;
-
 const StyledHeaderArea = styled.header<{
   $isDefaultMobile?: boolean;
 }>`
@@ -441,42 +354,11 @@ const StyledHeaderArea = styled.header<{
   border-bottom: 1px solid ${color.border.primary};
 `;
 
-const StyledHeaderContentSlot = styled.div<{
-  $hasToggle: boolean;
-}>`
+const StyledHeaderContentSlot = styled.div`
   flex: 1;
   width: 100%;
   height: 100%;
   overflow: hidden;
-      padding-right: ${(p) =>
-    p.$hasToggle ? '60px' : '0'};
-
-  & > * {
-    display: flex;
-    width: 100%;
-    height: 100%;
-    padding-left: ${(p) =>
-    p.$hasToggle ? '60px' : '0'};
-  }
-`;
-
-const StyledHeaderToggleButton = styled.button`
-  position: absolute;
-  left: 0;
-  top: 0;
-  bottom: 0;
-  width: 60px;
-  z-index: 10;
-  background: transparent;
-  border: none;
-  cursor: pointer;
-`;
-
-const StyledMainContentToggle = styled.button`
-  position: absolute;
-  top: ${space.space08};
-  left: ${space.space08};
-  z-index: 50;
 `;
 
 const StyledSidebarArea = styled.aside<{
@@ -505,7 +387,7 @@ const StyledMobileDrawer = styled.aside<{
   width: ${(p) => p.hasSidebar ? '300px' : `100px`};
   height: 100vh;
   background: white;
-  z-index: 1000;
+  z-index: ${layers.drawer};
   transform: translateX(-100%);
   transition: transform 0.3s ease;
 
@@ -515,12 +397,12 @@ const StyledMobileDrawer = styled.aside<{
 `;
 
 const StyledMobileDrawerOverlay = styled.div<{
-  active: boolean;
+  isOpen: boolean;
 }>`
   display: ${(p) =>
-    p.active ? 'block' : 'none'};
+    p.isOpen ? 'block' : 'none'};
   position: fixed;
   inset: 0;
   background: rgba(0, 0, 0, 0.4);
-  z-index: 999;
+  z-index: ${layers.drawer};
 `;

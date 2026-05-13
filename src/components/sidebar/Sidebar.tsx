@@ -2,7 +2,7 @@ import type { ReactNode } from 'react';
 import styled from '@emotion/styled';
 import { color } from '../../tokens/semantic-color';
 import { space } from '../../tokens/space';
-import { useLayout } from './Layout';
+import { useLayout } from '../layout/Layout';
 import { Hamburger } from '../../icons/Hamburger';
 
 interface SidebarProps {
@@ -12,20 +12,26 @@ interface SidebarProps {
 }
 
 export const Sidebar = ({ header, footer, children }: SidebarProps) => {
-  const { toggleSidebar } = useLayout();
+  const layoutContext = useLayout();
+
 
   return (
-    <StyledSidebarContainer>
+    <StyledSidebarContainer 
+      data-testid="sidebar-container"
+    >
       <StyledSidebarHeader>
         <HeaderLeftSlot>
           {header}
         </HeaderLeftSlot>
 
         <HeaderRightSlot>
-          <CloseButton onClick={toggleSidebar}>
+          <CloseButton 
+            data-testid="sidebar-toggle-btn" 
+            onClick={layoutContext.toggleSidebar}>
             <Hamburger />
           </CloseButton>
         </HeaderRightSlot>
+        
       </StyledSidebarHeader>
 
       <StyledSidebarNav>
