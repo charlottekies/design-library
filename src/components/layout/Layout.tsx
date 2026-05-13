@@ -310,6 +310,10 @@ const StyledLayoutContainer = styled.div<{
       return '1fr';
     }
 
+    if (p.hasHeader) {
+      return '80px 1fr';
+    }
+
   }};
 
   /* =========================
