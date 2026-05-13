@@ -25,18 +25,19 @@ export const Rail = ({
   return (
     <StyledRailContainer data-testid="rail-container">
       <StyledRailHeader>
-        <HeaderSpacer />
 
         <HeaderRightSlot>
+
           {shouldShowClose && (
-            <CloseButton
+            <StyledCloseButton
               data-testid="rail-toggle-btn" 
               onClick={layoutContext.toggleSidebar}
             >
               <Hamburger />
-            </CloseButton>
+            </StyledCloseButton>
           )}
         </HeaderRightSlot>
+
       </StyledRailHeader>
 
       <StyledRailNav>
@@ -73,13 +74,12 @@ const StyledRailContainer = styled.div`
  */
 const StyledRailHeader = styled.div`
   display: flex;
-  align-items: center;
-  justify-content: space-between;
+  justify-content: flex-start;
+  flex-direction: row;
+  box-sizing: border-box;
 
   height: 80px;
-  flex: 0 0 80px;
-  flex-shrink: 0;
-
+  width: 100%;
   padding: 0 12px;
 
   border-bottom: ${space.space01}
@@ -87,41 +87,21 @@ const StyledRailHeader = styled.div`
 `;
 
 /**
- * Empty left space so button
- * stays aligned consistently
- */
-const HeaderSpacer = styled.div`
-  flex: 1;
-`;
-
-/**
  * Fixed right slot
  * NEVER collapses
  */
 const HeaderRightSlot = styled.div`
-  display: flex;
-  align-items: center;
-  justify-content: center;
-
-  flex: 0 0 40px;
+  margin: auto;
+  background: transparent;
 `;
 
 /**
  * Stable button footprint
  */
-const CloseButton = styled.button`
-  width: 40px;
-  height: 40px;
-
-  display: flex;
-  align-items: center;
-  justify-content: center;
-
+const StyledCloseButton = styled.button`
   background: transparent;
   border: none;
   cursor: pointer;
-
-  flex-shrink: 0;
 `;
 
 export const StyledRailNav = styled.nav`

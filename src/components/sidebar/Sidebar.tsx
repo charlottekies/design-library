@@ -31,6 +31,7 @@ export const Sidebar = ({ header, footer, children }: SidebarProps) => {
             <Hamburger />
           </CloseButton>
         </HeaderRightSlot>
+        
       </StyledSidebarHeader>
 
       <StyledSidebarNav>
