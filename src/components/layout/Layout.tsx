@@ -64,6 +64,43 @@ export const Layout = ({
     setIsOpen((prev) => !prev);
   }
 
+  const renderedSidebarElement = () => {
+
+    if (!isSmallViewport) {
+      if (sidebar && isOpen) {
+        return sidebar;
+      }
+      if (sidebar && rail && !isOpen) {
+        return rail;
+      } 
+      if (!sidebar && rail) {
+        return rail
+      }
+    }
+    if (isSmallViewport) {
+      if (!!rail && !!sidebar) {
+        if (!isOpen) {
+          return rail;
+        } else {
+          return sidebar;
+        }
+      }
+
+      if (!!sidebar && !!!rail) {
+        if (isOpen) {
+          return sidebar;
+        } else {
+          return null;
+        }
+      }
+
+      if (!!rail && !!!sidebar) {
+        return rail;
+      }
+      return null;
+    }
+  }
+
   /**
    * Tracks and responds to changes in the browser size
    * */
@@ -90,19 +127,29 @@ export const Layout = ({
     }
 
     // DESKTOP / TABLET RULES
-    if (sidebar && rail) {
-      setIsOpen(true);
+    if (isSmallViewport) {
+      setIsOpen(false);
       return;
-    }
+    } 
 
-    if (sidebar && !rail) {
-      setIsOpen(!isSmallViewport); // collapse on small, open on large
-      return;
-    }
-
-    if (!sidebar && rail) {
+    if (sidebar || rail) {
       setIsOpen(true);
     }
+
+    
+    // if (sidebar && rail) {
+    //   setIsOpen(true);
+    //   return;
+    // }
+
+    // if (sidebar && !rail) {
+    //   setIsOpen(!isSmallViewport); // collapse on small, open on large
+    //   return;
+    // }
+
+    // if (!sidebar && rail) {
+    //   setIsOpen(true);
+    // }
   }, [isPhone, isSmallViewport, sidebar, rail]);
 
   /** 
@@ -137,13 +184,14 @@ export const Layout = ({
         {!isPhone && (!!sidebar || !!rail) && (
           <StyledSidebarArea isVisible={isOpen} data-testid="layout-sidebar"
 >
-            {isSmallViewport ? (
+            {/* {isSmallViewport ? (
               rail ?? null
             ) : sidebar && rail ? (
               isOpen ? sidebar : rail
             ) : (
               sidebar ?? rail ?? null
-            )}
+            )} */}
+             {renderedSidebarElement()}
           </StyledSidebarArea>
         )}
 
@@ -190,6 +238,10 @@ export const Layout = ({
 
 /** A default header to be rendered in the Layout when viewed from a phone, if one is not provided */
 const DefaultHeader: ReactNode = <Header />; 
+const SIDEBAR_WIDTH = '300px';
+const RAIL_WIDTH = '100px';
+const HEADER_HEIGHT = '80px';
+const PHONE_HEADER_HEIGHT = '50px';
 
 /* Styled Components for Internal Use */
 const StyledLayoutContainer = styled.div<{
@@ -208,88 +260,95 @@ const StyledLayoutContainer = styled.div<{
      GRID COLUMNS
      ========================= */
   grid-template-columns: ${(p) => {
+    // Phone = drawer only
     if (p.isPhone) {
-      return '1fr';
-    } 
-
-      // No sidebar or rail
-      if (!p.hasSidebar && !p.hasRail) {
-        return '0px 1fr';
-      }
-
-      // has both sidebar and rail
-      if (p.hasSidebar && p.hasRail) {
-        if (p.isOpen && p.isSmallViewport) {
-          return '100px 1fr';
-        } else if (p.isOpen && !p.isSmallViewport) {
-          return '300px 1fr';
-        } 
-      } 
-
-      // Only has a rail 
-      if (p.hasRail) {
-        return '100px 1fr';
-      }
-
-      // Only has sidebar
-      if (p.hasSidebar) {
-        if (!p.isSmallViewport) {
-          if (p.isOpen) {
-            return '300px 1fr';
-          } else {
-            return '0px 1fr';
-          }
-        }
-
-      }
-      return '0px 1fr';
+      return 'minmax(0, 1fr)';
     }
 
-  };
+
+     // NEW: no sidebar + no rail
+    if (!p.hasSidebar && !p.hasRail) {
+      return '0px minmax(0, 1fr)';
+    } 
+
+    // Small viewport behavior
+    if (p.isSmallViewport) {
+      // Sidebar + Rail
+      if (p.hasSidebar && p.hasRail) {
+        return p.isOpen
+          ? `${SIDEBAR_WIDTH} minmax(0, 1fr)`
+          : `${RAIL_WIDTH} minmax(0, 1fr)`;
+      }
+
+      // Rail only
+      if (!p.hasSidebar && p.hasRail) {
+        return `${RAIL_WIDTH} minmax(0, 1fr)`;
+      }
+
+      // Sidebar only
+      if (p.hasSidebar && !p.hasRail) {
+        return p.isOpen
+          ? `${SIDEBAR_WIDTH} minmax(0, 1fr)`
+          : `0px minmax(0, 1fr)`;
+      }
+
+      return 'minmax(0, 1fr)';
+    }
+
+    // =========================
+    // Desktop behavior
+    // =========================
+
+    // Sidebar + Rail
+    if (p.hasSidebar && p.hasRail) {
+      return p.isOpen
+        ? `${SIDEBAR_WIDTH} minmax(0, 1fr)`
+        : `100px minmax(0, 1fr)`;
+    }
+
+    // Rail only
+    if (!p.hasSidebar && p.hasRail) {
+      return `${RAIL_WIDTH} minmax(0, 1fr)`;
+    }
+
+    // Sidebar only
+    if (p.hasSidebar && !p.hasRail) {
+      return p.isOpen
+        ? `${SIDEBAR_WIDTH} minmax(0, 1fr)`
+        : `0px minmax(0, 1fr)`;
+    }
+
+    return 'minmax(0, 1fr)';
+  }};
 
   /* =========================
      GRID ROWS
      ========================= */
   grid-template-rows: ${(p) => {
-    // provide a default phone header, make space for a default header row
-    if (p.isPhone && !p.hasHeader) {
-      return '50px 1fr';
-    }
+    const hasVisibleHeader = p.hasHeader || p.isPhone;
 
-    // no provided header,  
-    if (!p.hasHeader) {
+    if (!hasVisibleHeader) {
       return '1fr';
     }
 
-    if (p.isPhone && p.hasHeader) {
-      return '80px 1fr';
-    }
-
-    // desktop / resized browser
-    return '80px 1fr';
+    return p.isPhone
+      ? `${PHONE_HEADER_HEIGHT} minmax(0, 1fr)`
+      : `${HEADER_HEIGHT} minmax(0, 1fr)`;
   }};
 
   /* =========================
      GRID AREAS
      ========================= */
   grid-template-areas: ${(p) => {
-    // REAL PHONE
-    // sidebar is drawer-only
-
+    // Phone = no sidebar column
     if (p.isPhone) {
-
-      return p.hasHeader
-        ? `
-          "header"
-          "main"
-        `
-        : `
-          "header"
-          "main"
-        `;
+      return `
+        "header"
+        "main"
+      `;
     }
 
-    // DESKTOP / RESIZED WINDOW
+    // Always maintain 2-column grid on desktop/tablet
     return p.hasHeader
       ? `
         "sidebar header"
@@ -300,7 +359,6 @@ const StyledLayoutContainer = styled.div<{
       `;
   }};
 `;
-
 const StyledHeaderArea = styled.header<{
   $isDefaultMobile?: boolean;
 }>`

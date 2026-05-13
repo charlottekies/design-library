@@ -130,7 +130,7 @@ test.describe(
 
                 await expect(
                     page.getByTestId(
-                        'layout-rail'
+                        'rail-container'
                     )
                 ).toBeHidden();
 
@@ -170,267 +170,104 @@ test.describe(
     }
 );
 
-//
-// =====================================================
-// 2. DESKTOP: TOGGLE SIDEBAR ↔ RAIL
-// =====================================================
-// //
-// test.describe(
-//   'Desktop interactions',
-//   () => {
-//     test(
-//       'sidebar toggle shows rail',
-//       async ({ page }) => {
-//         await page.setViewportSize(
-//           desktop
-//         );
-//         await page.goto(
-//           story('playwright-desktop')
-//         );
+test.describe('Small Viewport Behavior Tests', () => {
+    test('layout adapts correctly at small viewport', async ({ page, isMobile }) => {
+        test.skip(isMobile, 'This interaction is mobile-specific');
 
-//         await page
-//           .getByTestId(
-//             'layout-sidebar-toggle'
-//           )
-//           .click();
+        await page.setViewportSize({ width: 768, height: 900 });
+        await page.goto(story('with-rail'));
 
-//         await expect(
-//           page.getByTestId(
-//             'layout-rail'
-//           )
-//         ).toBeVisible();
+        // 1. Header still present
+        await expect(page.getByTestId('layout-header')).toBeVisible();
 
-//         await expect(
-//           page.getByTestId(
-//             'layout-sidebar'
-//           )
-//         ).toBeHidden();
+        // 2. Header grid row still present
+        const header = page.getByTestId('layout-header');
+        await expect(header).toBeVisible();
 
-//         const c = await cols(page);
-//         expect(c).toContain('100px');
-//       }
-//     );
+        // 3. Main grid row still present
+        await expect(page.getByTestId('layout-grid')).toBeVisible();
 
-//     test(
-//       'rail toggle restores sidebar',
-//       async ({ page }) => {
-//         await page.setViewportSize(
-//           desktop
-//         );
-//         await page.goto(
-//           story('playwright-desktop')
-//         );
+        // 4. Sidebar grid column still present (layout exists even if hidden)
+        const c = await gridColumns(page);
+        expect(c.length).toBeGreaterThanOrEqual(1);
 
-//         await page
-//           .getByTestId(
-//             'layout-sidebar-toggle'
-//           )
-//           .click();
+        // 5. No hamburger toggle button in header
+        await expect(page.getByTestId('header-toggle-btn')).toBeHidden();
 
-//         await page
-//           .getByTestId(
-//             'layout-rail-toggle'
-//           )
-//           .click();
+        // 6. Rail is visible (desktop small-viewport rule)
+        await expect(page.getByTestId('rail-container')).toBeVisible();
 
-//         await expect(
-//           page.getByTestId(
-//             'layout-sidebar'
-//           )
-//         ).toBeVisible();
+        // 7. Sidebar is not visible
+        await expect(page.getByTestId('sidebar-container')).toBeHidden();
 
-//         await expect(
-//           page.getByTestId(
-//             'layout-rail'
-//           )
-//         ).toBeHidden();
+        // 8. Sidebar grid size is 100px
+        expect(c[0]).toBe('100px');
 
-//         const c = await cols(page);
-//         expect(c).toContain('300px');
-//       }
-//     );
-//   }
-// );
+        // 9. Rail has hamburger toggle
+        await expect(
+            page.getByTestId('rail-container')
+                .getByTestId('rail-toggle-btn')
+        ).toBeVisible();
+    });
 
-// //
-// // =====================================================
-// // 3. MOBILE: VIEWPORT + DRAWER BEHAVIOR
-// // =====================================================
-// //
-// test.describe(
-//   'Mobile behavior',
-//   () => {
-//     test(
-//       'mobile shows rail + hides sidebar',
-//       async ({ page }) => {
-//         await page.setViewportSize(
-//           mobile
-//         );
-//         await page.goto(
-//           story('playwright-mobile')
-//         );
+    test('rail toggle opens sidebar', async ({ page, isMobile }) => {
+        test.skip(isMobile, 'This interaction is mobile-specific');
 
-//         await expect(
-//           page.getByTestId(
-//             'layout-header'
-//           )
-//         ).toBeVisible();
+        await page.setViewportSize({ width: 768, height: 900 });
+        await page.goto(story('with-rail'));
 
-//         await expect(
-//           page.getByTestId(
-//             'layout-sidebar'
-//           )
-//         ).toBeHidden();
+        const rail = page.getByTestId('rail-container');
+        const railToggleBtn = rail.getByTestId('rail-toggle-btn');
 
-//         await expect(
-//           page.getByTestId(
-//             'layout-rail'
-//           )
-//         ).toBeVisible();
+        await railToggleBtn.click();
 
-//         const c = await cols(page);
-//         expect(c).toContain('100px');
-//       }
-//     );
+        // 1. rail is not visible
+        await expect(rail).toBeHidden();
 
-//     test(
-//       'rail opens drawer with sidebar',
-//       async ({ page }) => {
-//         await page.setViewportSize(
-//           mobile
-//         );
-//         await page.goto(
-//           story('playwright-mobile')
-//         );
+        // 2. sidebar is visible
+        const sidebar = page.getByTestId('sidebar-container');
+        await expect(sidebar).toBeVisible();
 
-//         await page
-//           .getByTestId(
-//             'layout-rail-toggle'
-//           )
-//           .click();
+        // 3. sidebar toggle button exists
+        const sidebarToggleBtn = sidebar.getByTestId('sidebar-toggle-btn');
+        await expect(sidebarToggleBtn).toBeVisible();
 
-//         await expect(
-//           page.getByTestId(
-//             'layout-drawer'
-//           )
-//         ).toBeVisible();
+        // 4. grid column exists
+        const c = await gridColumns(page);
+        expect(c.length).toBeGreaterThanOrEqual(1);
 
-//         await expect(
-//           page.getByTestId(
-//             'layout-sidebar'
-//           )
-//         ).toBeVisible();
-//       }
-//     );
+        // 5. sidebar width is 300px
+        expect(c[0]).toBe('300px');
+    });
 
-//     test(
-//       'sidebar toggle returns rail',
-//       async ({ page }) => {
-//         await page.setViewportSize(
-//           mobile
-//         );
-//         await page.goto(
-//           story('playwright-mobile')
-//         );
+    test('sidebar toggle returns to rail', async ({ page, isMobile }) => {
+        test.skip(isMobile, 'This interaction is mobile-specific');
 
-//         await page
-//           .getByTestId(
-//             'layout-rail-toggle'
-//           )
-//           .click();
+        await page.setViewportSize({ width: 768, height: 900 });
+        await page.goto(story('with-rail'));
 
-//         await page
-//           .getByTestId(
-//             'layout-sidebar-toggle'
-//           )
-//           .click();
+        const rail = page.getByTestId('rail-container');
+        const railToggleBtn = rail.getByTestId('rail-toggle-btn');
 
-//         await expect(
-//           page.getByTestId(
-//             'layout-rail'
-//           )
-//         ).toBeVisible();
+        // open sidebar
+        await railToggleBtn.click();
 
-//         await expect(
-//           page.getByTestId(
-//             'layout-sidebar'
-//           )
-//         ).toBeHidden();
-//       }
-//     );
-//   }
-// );
+        const sidebarContainer = page.getByTestId('layout-sidebar');
+        const sidebar = page.getByTestId('sidebar-container');
+        const sidebarToggleBtn = sidebarContainer.getByTestId('sidebar-toggle-btn');
 
-// //
-// // =====================================================
-// // 4. NO SIDEBAR SYSTEM (HEADER ONLY MODE)
-// // =====================================================
-// //
-// test.describe(
-//   'No-sidebar layouts',
-//   () => {
-//     test(
-//       'no sidebar = no toggle in header',
-//       async ({ page }) => {
-//         await page.setViewportSize(
-//           desktop
-//         );
-//         await page.goto(
-//           story('no-sidebar')
-//         );
+        await sidebarToggleBtn.click();
 
-//         await expect(
-//           page.getByTestId(
-//             'layout-sidebar'
-//           )
-//         ).toBeHidden();
+        // 1. rail visible again
+        await expect(rail).toBeVisible();
 
-//         await expect(
-//           page.getByTestId(
-//             'layout-header-toggle'
-//           )
-//         ).toHaveCount(0);
-//       }
-//     );
-//   }
-// );
+        // 2. sidebar hidden
+        await expect(sidebar).toBeHidden();
 
-// //
-// // =====================================================
-// // 5. NO HEADER + RAIL ONLY SYSTEM
-// // =====================================================
-// //
-// test.describe(
-//   'Rail-only system',
-//   () => {
-//     test(
-//       'rail visible, no toggle',
-//       async ({ page }) => {
-//         await page.setViewportSize(
-//           desktop
-//         );
-//         await page.goto(
-//           story('no-header-with-rail')
-//         );
+        // 3. grid column still exists
+        const c = await gridColumns(page);
+        expect(c.length).toBeGreaterThanOrEqual(1);
 
-//         await expect(
-//           page.getByTestId(
-//             'layout-rail'
-//           )
-//         ).toBeVisible();
-
-//         await expect(
-//           page.getByTestId(
-//             'layout-header'
-//           )
-//         ).toBeHidden();
-
-//         await expect(
-//           page.getByTestId(
-//             'layout-rail-toggle'
-//           )
-//         ).toHaveCount(0);
-//       }
-//     );
-//   }
-// );
+        expect(c[0]).toBe('100px');
+    });
+});
