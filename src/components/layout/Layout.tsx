@@ -215,8 +215,6 @@ export const Layout = ({
 const DefaultHeader: ReactNode = <Header />; 
 const SIDEBAR_WIDTH = '300px';
 const RAIL_WIDTH = '100px';
-const HEADER_HEIGHT = '80px';
-const PHONE_HEADER_HEIGHT = '50px';
 
 /* Styled Components for Internal Use */
 const StyledLayoutContainer = styled.div<{
@@ -300,15 +298,18 @@ const StyledLayoutContainer = styled.div<{
      GRID ROWS
      ========================= */
   grid-template-rows: ${(p) => {
-    const hasVisibleHeader = p.hasHeader || p.isPhone;
-
-    if (!hasVisibleHeader) {
+    if (p.isPhone) {
+      if (p.hasHeader) {
+        return '80px 1fr';
+      } else {
+        return '50px 1fr';
+      }
+    }
+    
+    if (!p.hasHeader) {
       return '1fr';
     }
 
-    return p.isPhone
-      ? `${PHONE_HEADER_HEIGHT} minmax(0, 1fr)`
-      : `${HEADER_HEIGHT} minmax(0, 1fr)`;
   }};
 
   /* =========================
