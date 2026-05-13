@@ -1,5 +1,5 @@
 {
-  "name": "design-library",
+  "name": "@chopekies/design-library",
   "version": "0.0.0",
   "type": "module",
   "main": "./dist/index.cjs",

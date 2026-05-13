@@ -1,17 +1,19 @@
-// Responsible for building my src directory as an npm packageimport { defineConfig } from 'vite';
+import { defineConfig } from 'vite';
 import react from '@vitejs/plugin-react';
 import path from 'node:path';
-import { defineConfig } from 'vite';
 
 export default defineConfig({
   plugins: [react()],
+
+  // IMPORTANT: isolate library build from app/playground/public assets
+  publicDir: false,
 
   build: {
     lib: {
       entry: path.resolve(__dirname, 'src/index.ts'),
       name: 'DesignLibrary',
       fileName: 'index',
-      formats: ['es', 'cjs']
+      formats: ['es', 'cjs'],
     },
 
     rollupOptions: {
@@ -20,9 +22,12 @@ export default defineConfig({
       output: {
         globals: {
           react: 'React',
-          'react-dom': 'ReactDOM'
-        }
-      }
-    }
-  }
+          'react-dom': 'ReactDOM',
+        },
+      },
+    },
+
+    // optional but helps ensure clean builds
+    emptyOutDir: true,
+  },
 });
