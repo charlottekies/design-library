@@ -1,3 +1,4 @@
+// responsible for development run tasks 
 /// <reference types="vitest/config" />
 import { defineConfig } from 'vite';
 import react, { reactCompilerPreset } from '@vitejs/plugin-react';

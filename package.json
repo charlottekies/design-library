@@ -25,7 +25,8 @@
     "lint": "eslint .",
     "preview": "vite preview",
     "storybook": "storybook dev -p 6006",
-    "build-storybook": "storybook build"
+    "build-storybook": "storybook build",
+    "build:lib": "vite build --config vite.lib.config.ts #builds the src directory and packages it for deployment to npm" 
   },
   "peerDependencies": {
     "react": ">=18 <20",
