@@ -3,14 +3,19 @@ This repository holds and exports design elements that can be used to build a we
 
 ## Structure
 In the src directory you will find:
+```
 > components
   - This is where custom buttons, sidebars, input fields, and other type of React components are held
+
 > icons
   - In here as you might expect, are custom-designed icons with variable sizes (e.g. pencil, home, book...)
+
 > tokens
   - color tokens and spacing tokens are among the tokens that exist in here. You may use them to apply colors and consistent spacing to your website components
+
 > stories
-  - This is where every exported component's Storybook story will be defined. 
+  - This is where every exported component's Storybook story will be defined.
+```
 
 <br>
 
