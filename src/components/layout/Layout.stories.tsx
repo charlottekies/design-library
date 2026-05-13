@@ -1,10 +1,10 @@
 import type { Meta, StoryObj } from '@storybook/react';
 import { Layout } from './Layout';
 import { color } from '../../tokens/semantic-color';
-import { Sidebar } from './Sidebar';
+import { Sidebar } from '../sidebar/Sidebar';
 import React from 'react';
-import { Rail } from './Rail';
-import { Header } from './Header';
+import { Rail } from '../rail/Rail';
+import { Header } from '../header/Header';
 
 const metadata: Meta<typeof Layout> = {
   title: 'Components/Layout',
@@ -49,9 +49,6 @@ const RailComponent = () => (<Rail><NavItem label="" isActive icon={<svg xmlns="
 
 const MySidebar = () => (<Sidebar><SidebarContent /></Sidebar>);
 
-/* ------------------------------------
- * DEFAULT
- * ------------------------------------ */
 export const Default: Story = {
   args: {
     header: <Header>Header</Header>,
@@ -60,9 +57,7 @@ export const Default: Story = {
   },
 };
 
-/* ------------------------------------
- * WITH RAIL
- * ------------------------------------ */
+
 export const WithRail: Story = {
   args: {
     header: <Header>Header</Header>,
@@ -70,51 +65,37 @@ export const WithRail: Story = {
     rail: <RailComponent />,
     children: <Placeholder label="Main Content" backgroundColor={color.surface.secondary} fontColor={color.text.primary.default} />,
   },
-  parameters: { viewport: { defaultViewport: 'desktop' } },
 };
 
-/* ------------------------------------
- * NO HEADER
- * ------------------------------------ */
 export const NoHeader: Story = {
   args: {
     sidebar: <MySidebar />,
     children: <Placeholder label="Main Content" backgroundColor={color.surface.secondary} fontColor={color.text.primary.default} />,
   },
-  parameters: { viewport: { defaultViewport: 'mobile1' } },
 };
 
-/* ------------------------------------
- * NO SIDEBAR
- * ------------------------------------ */
+
 export const NoSidebar: Story = {
   args: {
     header: <Header>Header</Header>,
     children: <Placeholder label="Main Content" backgroundColor={color.surface.secondary} fontColor={color.text.primary.default} />,
   },
-  parameters: { viewport: { defaultViewport: 'mobile1' } },
 };
 
-/* ------------------------------------
- * NO SIDEBAR WITH RAIL
- * ------------------------------------ */
 export const NoSidebarWithRail: Story = {
   args: {
     header: <Header>Header</Header>,
     rail: <RailComponent />,
     children: <Placeholder label="Main Content" backgroundColor={color.surface.secondary} fontColor={color.text.primary.default} />,
   },
-  parameters: { viewport: { defaultViewport: 'mobile1' } },
 };
 
-/* ------------------------------------
- * CUSTOM ICON
- * ------------------------------------ */
+
 export const CustomMenuIcon: Story = {
   args: {
     header: <Header menuIcon={<span style={{ fontSize: 20 }}>🍔</span>}>Header</Header>,
     sidebar: <MySidebar />,
     children: <Placeholder label="Main Content" backgroundColor={color.surface.secondary} fontColor={color.text.primary.default} />,
   },
-  parameters: { viewport: { defaultViewport: 'mobile1' } },
+  parameters: { viewport: { defaultViewport: 'mobile' } },
 };

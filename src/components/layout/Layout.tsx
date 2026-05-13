@@ -8,7 +8,7 @@ import {
 } from 'react';
 import { color } from '../../tokens/semantic-color';
 import { layers } from '../../tokens/layers';
-import { Header } from './Header';
+import { Header } from '../header/Header';
 
 /* Types & Context  */
 

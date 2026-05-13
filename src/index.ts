@@ -8,8 +8,8 @@ export { layers } from "./tokens/layers";
 
 /* components */ 
 export { Layout } from "./components/layout/Layout";
-export { Sidebar } from "./components/layout/Sidebar";
-export { Rail } from "./components/layout/Rail";
+export { Sidebar } from "./components/sidebar/Sidebar";
+export { Rail } from "./components/rail/Rail";
 export { GlobalStyles } from "./styles/globalStyles";
 
 /* icons */
