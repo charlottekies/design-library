@@ -1,5 +1,11 @@
 # @chopekies/design-library
 
+## 0.1.6
+
+### Patch Changes
+
+- c035283: Updates output index file to index.js
+
 ## 0.1.5
 
 ### Patch Changes
