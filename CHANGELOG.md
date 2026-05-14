@@ -1,5 +1,11 @@
 # @chopekies/design-library
 
+## 0.1.3
+
+### Patch Changes
+
+- 97386e4: Adds .d.ts files for exports
+
 ## 0.1.2
 
 ### Patch Changes
