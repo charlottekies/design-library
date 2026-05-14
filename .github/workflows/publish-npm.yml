@@ -31,11 +31,20 @@ jobs:
       - name: Build library
         run: npm run build:lib
 
-      - name: Create release PR or publish
+      # 1. Run changesets to check for status / create PRs, but DON'T let it publish
+      # We use an output variable to see if a publish is actually needed
+      - name: Create release PR or version package
+        id: changesets
         uses: changesets/action@v1
         with:
-          publish: npm publish --provenance --access public
+          version: npm run changeset version
           commit: "chore: release version"
           title: "chore: release version"
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      # 2. Run the publish natively so the GitHub OIDC token is correctly passed to npm
+      # This step only runs if Changesets didn't just create a PR and actually wants to publish
+      - name: Publish to npm via Trusted Publishing
+        if: steps.changesets.outputs.hasChangesets == 'false'
+        run: npm publish --provenance --access public
