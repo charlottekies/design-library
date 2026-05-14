@@ -27,7 +27,8 @@
     "storybook": "storybook dev -p 6006",
     "build-storybook": "storybook build",
     "changeset": "npx changeset",
-    "build:lib": "vite build --config vite.lib.config.ts"
+    "build:lib": "vite build --config vite.lib.config.ts",
+    "release": "changeset publish --provenance"
   },
   "peerDependencies": {
     "react": ">=18 <20",
