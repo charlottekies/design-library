@@ -19,11 +19,16 @@ jobs:
       - name: Checkout repo
         uses: actions/checkout@v4
 
+      # Upgrade to Node 24 (LTS) to get native npm v11+ environment
       - name: Setup Node
         uses: actions/setup-node@v4
         with:
-          node-version: 20
+          node-version: 24
           registry-url: https://registry.npmjs.org
+
+      # Double check that npm is fully updated to handle the OIDC handshake
+      - name: Update npm
+        run: npm install -g npm@latest
 
       - name: Install dependencies
         run: npm ci
@@ -31,18 +36,11 @@ jobs:
       - name: Build library
         run: npm run build:lib
 
-      # Let changesets consume the markdown files and bump versions locally
-      - name: Create release PR or version package
-        id: changesets
+      - name: Create release PR or publish
         uses: changesets/action@v1
         with:
-          version: npm run changeset version
+          publish: npm publish --provenance --access public
           commit: "chore: release version"
           title: "chore: release version"
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
-      # Run the publish natively so the OIDC token works perfectly
-      - name: Publish to npm
-        if: steps.changesets.outputs.hasChangesets == 'false'
-        run: npm publish --provenance --access public
