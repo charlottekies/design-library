@@ -1,0 +1,12 @@
+{
+  "extends": "./tsconfig.app.json",
+  "compilerOptions": {
+    "composite": false,        /* Disable this to allow direct emission */
+    "noEmit": false,           /* The 'on' switch */
+    "declaration": true,       /* Generate .d.ts */
+    "emitDeclarationOnly": true, 
+    "declarationDir": "dist",
+    "rootDir": "src"           /* Forces TS to look at src as the root */
+  },
+  "include": ["src/**/*"]      /* Ensures all subfolders are scanned */
+}
