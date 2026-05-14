@@ -1,0 +1,65 @@
+name: Playwright Tests 2
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+  workflow_dispatch:
+
+# Cancel older runs for the same branch/PR when new commits are pushed
+concurrency:
+  group: playwright-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  test-2:
+    timeout-minutes: 60
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: lts/*
+
+          # Cache npm downloads to speed up `npm ci`
+          # Auto-invalidates when package-lock.json changes
+          # GitHub caches expire after 7 days of inactivity
+          cache: npm
+
+      - name: Cache Playwright browsers
+        uses: actions/cache@v4
+        with:
+          # Cache browser binaries (Chromium/WebKit/Firefox)
+          path: ~/.cache/ms-playwright
+
+          # Refresh cache when dependencies change
+          key: playwright-${{ runner.os }}-${{ hashFiles('package-lock.json') }}
+
+          # Fall back to latest browser cache for this OS
+          restore-keys: |
+            playwright-${{ runner.os }}-
+
+          # Cache expires after 7 days of inactivity
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Install Playwright browsers
+        # Uses cache if available; downloads only when needed
+        run: npx playwright install --with-deps
+
+      - name: Run Playwright tests
+        run: npx playwright test
+
+      - name: Upload Playwright report
+        uses: actions/upload-artifact@v4
+        if: ${{ !cancelled() }}
+        with:
+          name: playwright-report
+          path: playwright-report/
+          retention-days: 30
