@@ -1,6 +1,6 @@
 {
-  "name": "design-library",
-  "version": "0.0.0",
+  "name": "@chopekies/design-library",
+  "version": "0.1.0",
   "type": "module",
   "main": "./dist/index.cjs",
   "module": "./dist/index.js",
@@ -25,7 +25,10 @@
     "lint": "eslint .",
     "preview": "vite preview",
     "storybook": "storybook dev -p 6006",
-    "build-storybook": "storybook build"
+    "build-storybook": "storybook build",
+    "changeset": "npx changeset",
+    "build:lib": "vite build --config vite.lib.config.ts",
+    "release": "changeset publish --provenance"
   },
   "peerDependencies": {
     "react": ">=18 <20",
@@ -38,6 +41,7 @@
   },
   "devDependencies": {
     "@babel/core": "^7.29.0",
+    "@changesets/cli": "^2.31.0",
     "@chromatic-com/storybook": "^5.1.2",
     "@eslint/js": "^10.0.1",
     "@playwright/test": "^1.60.0",
