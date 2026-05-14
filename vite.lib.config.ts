@@ -31,7 +31,7 @@ export default defineConfig({
       entry: path.resolve(__dirname, 'src/index.ts'),
       name: 'DesignLibrary',
       fileName: 'index',
-      formats: ['es', 'cjs'],
+      formats: ['es'],
     },
 
     rollupOptions: {
