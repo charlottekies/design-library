@@ -1,5 +1,11 @@
 # @chopekies/design-library
 
+## 0.1.5
+
+### Patch Changes
+
+- cef2134: Adds support for ESM
+
 ## 0.1.4
 
 ### Patch Changes
