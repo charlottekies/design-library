@@ -31,8 +31,7 @@ jobs:
       - name: Build library
         run: npm run build:lib
 
-      # 1. Run changesets to check for status / create PRs, but DON'T let it publish
-      # We use an output variable to see if a publish is actually needed
+      # Let changesets consume the markdown files and bump versions locally
       - name: Create release PR or version package
         id: changesets
         uses: changesets/action@v1
@@ -43,8 +42,7 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
-      # 2. Run the publish natively so the GitHub OIDC token is correctly passed to npm
-      # This step only runs if Changesets didn't just create a PR and actually wants to publish
-      - name: Publish to npm via Trusted Publishing
+      # Run the publish natively so the OIDC token works perfectly
+      - name: Publish to npm
         if: steps.changesets.outputs.hasChangesets == 'false'
         run: npm publish --provenance --access public
