@@ -31,22 +31,24 @@ jobs:
       - name: Build library
         run: npm run build:lib
 
-      # Check if there are changesets to release
       - name: Check changesets
         run: npx changeset status
 
-      # Apply version bumps + generate changelogs
       - name: Version packages
         run: npx changeset version
 
-      # Commit version bump so git stays in sync
-      - name: Commit version bump
+      # 👉 NEW: create git tag from version
+      - name: Create Git tag
         run: |
+          VERSION=$(node -p "require('./package.json').version")
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add .
-          git diff --staged --quiet || git commit -m "chore: version packages"
+          git tag v$VERSION
 
-      # Publish with npm provenance (THIS is correct place for it)
+      # 👉 push commit + tag
+      - name: Push git changes + tags
+        run: |
+          git push origin main --tags
+
       - name: Publish to npm (OIDC + provenance)
         run: npm publish --provenance --access public
