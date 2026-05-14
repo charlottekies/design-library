@@ -1,6 +1,10 @@
 {
   "name": "@chopekies/design-library",
   "version": "0.1.1",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/charlottekies/design-library.git"
+  },
   "type": "module",
   "main": "./dist/index.cjs",
   "module": "./dist/index.js",
