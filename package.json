@@ -28,7 +28,7 @@
     "build-storybook": "storybook build",
     "changeset": "npx changeset",
     "build:lib": "vite build --config vite.lib.config.ts",
-    "release": "changeset publish"
+    "publish": "npm publish --provenance --access public"
   },
   "peerDependencies": {
     "react": ">=18 <20",
