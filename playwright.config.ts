@@ -46,7 +46,6 @@ export default defineConfig({
       },
     },
   ],
-
   webServer: {
   command: 'npm run storybook -- --host 127.0.0.1',
   url: 'http://127.0.0.1:6006',
