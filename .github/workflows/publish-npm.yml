@@ -31,24 +31,42 @@ jobs:
       - name: Build library
         run: npm run build:lib
 
+      # 👉 Detect if a release is actually needed
       - name: Check changesets
-        run: npx changeset status
+        id: changesets
+        run: |
+          npx changeset status
+          echo "HAS_CHANGES=true" >> $GITHUB_OUTPUT
 
+      # 👉 Exit early if nothing to release
+      - name: Stop if no changesets
+        if: steps.changesets.outputs.HAS_CHANGES != 'true'
+        run: echo "No changesets found. Skipping release."
+
+      # Everything below only runs if changesets exist
       - name: Version packages
+        if: steps.changesets.outputs.HAS_CHANGES == 'true'
         run: npx changeset version
 
-      # 👉 NEW: create git tag from version
-      - name: Create Git tag
+      - name: Commit version bump
+        if: steps.changesets.outputs.HAS_CHANGES == 'true'
         run: |
-          VERSION=$(node -p "require('./package.json').version")
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add .
+          git diff --staged --quiet || git commit -m "chore: version packages"
+
+      - name: Create Git tag
+        if: steps.changesets.outputs.HAS_CHANGES == 'true'
+        run: |
+          VERSION=$(node -p "require('./package.json').version")
           git tag v$VERSION
 
-      # 👉 push commit + tag
-      - name: Push git changes + tags
+      - name: Push changes + tags
+        if: steps.changesets.outputs.HAS_CHANGES == 'true'
         run: |
           git push origin main --tags
 
       - name: Publish to npm (OIDC + provenance)
+        if: steps.changesets.outputs.HAS_CHANGES == 'true'
         run: npm publish --provenance --access public
