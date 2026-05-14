@@ -15,6 +15,5 @@ export { GlobalStyles } from "./styles/globalStyles";
 /* icons */
 export type { IconProps, IconSize } from './icons/types';
 export { BaseIcon } from './icons/BaseIcon';
-
 export { Hamburger } from './icons/Hamburger';
 
