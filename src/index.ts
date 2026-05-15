@@ -14,6 +14,7 @@ export { LayoutHeader as Header } from "./components/header/LayoutHeader";
 export { LayoutSidebar as Sidebar } from "./components/sidebar/LayoutSidebar";
 export { LayoutRail as Rail } from "./components/rail/LayoutRail";
 export { Button } from "./components/buttons/Button";
+export { Text } from "./components/text/Text";
 
 /* icons */
 export type { IconProps, IconSize } from './icons/types';
