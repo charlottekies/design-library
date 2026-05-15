@@ -1,6 +1,6 @@
 import type { ReactNode } from 'react';
 import styled from '@emotion/styled';
-import { color } from '../../tokens/semantic-color';
+import { color } from '../../tokens/color/semantic';
 import { space } from '../../tokens/space';
 import { useLayout } from '../layout/Layout';
 import { Hamburger } from '../../icons/Hamburger';
@@ -14,7 +14,7 @@ interface RailProps {
  * A compact right rail (icon/tool strip style)
  * fixed width: 100px
  */
-export const Rail = ({
+export const LayoutRail = ({
   footer,
   children,
 }: RailProps) => {

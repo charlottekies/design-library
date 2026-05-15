@@ -1,16 +1,19 @@
-export { Button } from "./components/buttons/Button";
+/* styles */
+export { GlobalStyles } from "./styles/globalStyles";
 
 /* tokens */
-export { color } from "./tokens/semantic-color";
+export { color } from "./tokens/color/semantic";
+export { typography } from "./tokens/typography/semantic";
 export { border } from "./tokens/border";
 export { space } from "./tokens/space";
 export { layers } from "./tokens/layers";
 
 /* components */ 
 export { Layout } from "./components/layout/Layout";
-export { Sidebar } from "./components/sidebar/Sidebar";
-export { Rail } from "./components/rail/Rail";
-export { GlobalStyles } from "./styles/globalStyles";
+export { LayoutHeader as Header } from "./components/header/LayoutHeader";
+export { LayoutSidebar as Sidebar } from "./components/sidebar/LayoutSidebar";
+export { LayoutRail as Rail } from "./components/rail/LayoutRail";
+export { Button } from "./components/buttons/Button";
 
 /* icons */
 export type { IconProps, IconSize } from './icons/types';

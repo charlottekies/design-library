@@ -1,6 +1,6 @@
 import type { ReactNode } from 'react';
 import styled from '@emotion/styled';
-import { color } from '../../tokens/semantic-color';
+import { color } from '../../tokens/color/semantic';
 import { space } from '../../tokens/space';
 import { useLayout } from '../layout/Layout';
 import { Hamburger } from '../../icons/Hamburger';
@@ -11,7 +11,7 @@ interface SidebarProps {
   children: ReactNode;
 }
 
-export const Sidebar = ({ header, footer, children }: SidebarProps) => {
+export const LayoutSidebar = ({ header, footer, children }: SidebarProps) => {
   const layoutContext = useLayout();
 
 
@@ -51,7 +51,7 @@ export const Sidebar = ({ header, footer, children }: SidebarProps) => {
    STYLES
    ========================= */
 
-const StyledSidebarContainer = styled.aside`
+const StyledSidebarContainer = styled.div`
   display: flex;
   flex-direction: column;
   height: 100%;

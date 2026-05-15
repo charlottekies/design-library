@@ -1,6 +1,6 @@
 import { raw } from "./raw";
 
-export const cssVariables = `
+export const variables = `
 :root {
   --color-surface-default: ${raw.gray100};
   --color-surface-secondary: ${raw.eggshell};

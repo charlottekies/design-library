@@ -2,7 +2,7 @@ import type { ReactNode } from 'react';
 import styled from '@emotion/styled';
 import { useLayout } from '../layout/Layout';
 import { Hamburger } from '../../icons/Hamburger';
-import { color } from '../../tokens/semantic-color';
+import { color } from '../../tokens/color/semantic';
 
 /**
  * Header is a layout-aware shell component.
@@ -20,7 +20,7 @@ export interface HeaderProps {
   menuIcon?: ReactNode;
 }
 
-export const Header = ({
+export const LayoutHeader = ({
   children,
   menuIcon = <Hamburger color="#ff00ff" />,
 }: HeaderProps) => {
@@ -51,7 +51,7 @@ const shouldShowToggle =
 };
 
 
-const StyledHeader = styled.header`
+const StyledHeader = styled.div`
   position: relative;
   display: flex;
   align-items: center;

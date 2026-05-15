@@ -1,7 +1,7 @@
 import type { Meta, StoryObj } from '@storybook/react';
 import styled from '@emotion/styled';
-import { color } from './semantic-color';
-import { InteractiveDemo, Swatch } from '../stories/components';
+import { color } from './semantic'
+import { InteractiveDemo, Swatch } from '../../stories/components';
 
 
 const metadata: Meta = {
