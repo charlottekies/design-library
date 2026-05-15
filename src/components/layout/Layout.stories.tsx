@@ -241,7 +241,7 @@ export const CustomMenuIcon: Story = {
   args: {
     header: (
       <Header menuIcon={<span style={{ fontSize: 20 }}>🍔</span>}>
-        Header
+        <Text variant='h2' renderAs='span'>Header</Text>
       </Header>
     ),
     sidebar: <MySidebar />,
