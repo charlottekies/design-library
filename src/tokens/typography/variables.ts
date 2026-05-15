@@ -1,6 +1,6 @@
 import { rawTypography as raw } from './raw';
 
-export const typographyCssVariables = `
+export const variables = `
 :root {
   /* Font Families */
 

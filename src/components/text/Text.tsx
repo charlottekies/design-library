@@ -22,49 +22,32 @@ type RenderElement =
   | 'h3'
   | 'h4';
 
+type TextWeight =
+  | 'regular'
+  | 'medium'
+  | 'semibold'
+  | 'bold';
+
 export interface TextProps {
   children: ReactNode;
 
-  /**
-   * Visual typography style (drives font size, line height, weight, spacing)
-   */
   variant?: TextVariant;
-
-  /**
-   * Semantic HTML override
-   * If omitted, uses variant default mapping
-   */
   renderAs?: RenderElement;
 
-  /**
-   * Tokenized text color override
-   */
   color?: string;
 
-  /**
-   * Emphasis styling
-   */
   italic?: boolean;
   underline?: boolean;
+  weight?: TextWeight;
 
-  /**
-   * Layout behavior for UI text
-   */
   align?: 'left' | 'center' | 'right';
-
-  /**
-   * Single-line truncation
-   */
   truncate?: boolean;
 
-  /**
-   * Monospace mode (for metrics / code-like UI text)
-   */
   mono?: boolean;
 }
 
 /* ---------------------------------------
-   Semantic default rendering
+   Default rendering
 ---------------------------------------- */
 
 const defaultRenderMap: Record<
@@ -81,24 +64,43 @@ const defaultRenderMap: Record<
 };
 
 /* ---------------------------------------
-   Base typography styles (from tokens)
+   Weight map
 ---------------------------------------- */
 
-type StyledTextProps = React.PropsWithChildren<{
+const weightMap: Record<TextWeight, string> = {
+  regular: '400',
+  medium: '500',
+  semibold: '600',
+  bold: '700',
+};
+
+/* ---------------------------------------
+   Styled props
+---------------------------------------- */
+
+type StyledTextProps = {
+  children?: ReactNode;
+
   $variant: TextVariant;
   $color?: string;
   $italic?: boolean;
   $underline?: boolean;
+  $weight?: TextWeight;
   $align?: 'left' | 'center' | 'right';
   $truncate?: boolean;
   $mono?: boolean;
-}>;
+};
+
+/* ---------------------------------------
+   Base styles
+---------------------------------------- */
 
 const baseStyles = ({
   $variant,
   $color,
   $italic,
   $underline,
+  $weight,
   $align,
   $truncate,
   $mono,
@@ -118,10 +120,13 @@ const baseStyles = ({
 
     font-size: ${style.fontSize};
     line-height: ${style.lineHeight};
-    font-weight: ${style.fontWeight};
     letter-spacing: ${style.letterSpacing};
 
-    text-align: ${$align ?? 'left'};
+    font-weight: ${
+      $weight
+        ? weightMap[$weight]
+        : style.fontWeight
+    };
 
     font-style: ${$italic
       ? 'italic'
@@ -130,6 +135,8 @@ const baseStyles = ({
     text-decoration: ${$underline
       ? 'underline'
       : 'none'};
+
+    text-align: ${$align ?? 'left'};
 
     overflow-wrap: break-word;
 
@@ -143,7 +150,7 @@ const baseStyles = ({
 };
 
 /* ---------------------------------------
-   Real semantic element components
+   Element components
 ---------------------------------------- */
 
 const H1 = styled.h1<StyledTextProps>(
@@ -171,7 +178,7 @@ const Span = styled.span<StyledTextProps>(
 );
 
 /* ---------------------------------------
-   Component mapping
+   Component map
 ---------------------------------------- */
 
 const componentMap: Record<
@@ -197,6 +204,7 @@ export const Text = ({
   color,
   italic,
   underline,
+  weight,
   align,
   truncate,
   mono,
@@ -214,6 +222,7 @@ export const Text = ({
       $color={color}
       $italic={italic}
       $underline={underline}
+      $weight={weight}
       $align={align}
       $truncate={truncate}
       $mono={mono}
