@@ -1,5 +1,11 @@
 # @chopekies/design-library
 
+## 0.1.8
+
+### Patch Changes
+
+- d87719b: Exports new Text component
+
 ## 0.1.7
 
 ### Patch Changes
