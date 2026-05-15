@@ -2,9 +2,9 @@ import { variables as colorVars } from '../tokens/color/variables';
 import { variables as typographyVars } from '../tokens/typography/variables';
 import { createGlobalStyle } from 'styled-components';
 
-import regular from "./assets/fonts/lexend/Lexend-Regular.woff2";
-import medium from "./assets/fonts/lexend/Lexend-Medium.woff2";
-import bold from "./assets/fonts/lexend/Lexend-Bold.woff2";
+import regular from "../assets/fonts/Lexend-Regular.woff2";
+import medium from "../assets/fonts/Lexend-Medium.woff2";
+import bold from "../assets/fonts/Lexend-Bold.woff2";
 
 export const GlobalStyles = createGlobalStyle`
   ${colorVars}
