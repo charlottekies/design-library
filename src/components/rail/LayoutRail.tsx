@@ -111,6 +111,7 @@ export const StyledRailNav = styled.nav`
   display: flex;
   flex-direction: column;
   align-items: center;
+  min-width: 0;
 
   padding: 0.5rem 0;
 `;
