@@ -1,5 +1,12 @@
 # @chopekies/design-library
 
+## 0.1.9
+
+### Patch Changes
+
+- 1149f7c: Exports new Text component
+- 1149f7c: Adds border radius token and adjusts min width of rail
+
 ## 0.1.8
 
 ### Patch Changes
