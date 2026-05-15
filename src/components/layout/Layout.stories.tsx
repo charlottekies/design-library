@@ -1,6 +1,6 @@
 import type { Meta, StoryObj } from '@storybook/react';
 import { Layout } from './Layout';
-import { color } from '../../tokens/semantic-color';
+import { color } from '../../tokens/color/semantic';
 import { Sidebar } from '../sidebar/Sidebar';
 import React from 'react';
 import { Rail } from '../rail/Rail';

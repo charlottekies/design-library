@@ -2,11 +2,11 @@
 export { GlobalStyles } from "./styles/globalStyles";
 
 /* tokens */
-export { color } from "./tokens/semantic-color";
+export { color } from "./tokens/color/semantic";
+export { typography } from "./tokens/typography/semantic";
 export { border } from "./tokens/border";
 export { space } from "./tokens/space";
 export { layers } from "./tokens/layers";
-
 
 /* components */ 
 export { Layout } from "./components/layout/Layout";

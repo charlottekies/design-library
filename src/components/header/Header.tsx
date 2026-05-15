@@ -2,7 +2,7 @@ import type { ReactNode } from 'react';
 import styled from '@emotion/styled';
 import { useLayout } from '../layout/Layout';
 import { Hamburger } from '../../icons/Hamburger';
-import { color } from '../../tokens/semantic-color';
+import { color } from '../../tokens/color/semantic';
 
 /**
  * Header is a layout-aware shell component.

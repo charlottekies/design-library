@@ -6,7 +6,7 @@ import {
   useEffect,
   useState,
 } from 'react';
-import { color } from '../../tokens/semantic-color';
+import { color } from '../../tokens/color/semantic';
 import { layers } from '../../tokens/layers';
 import { Header } from '../header/Header';
 

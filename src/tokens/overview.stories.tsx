@@ -1,6 +1,6 @@
 import type { Meta, StoryObj } from '@storybook/react';
 import styled from '@emotion/styled';
-import { color } from './semantic-color';
+import { color } from './color/semantic';
 
 const metadata: Meta = {
   title: 'Tokens/Overview',

@@ -1,5 +1,5 @@
 import type { ReactNode } from 'react';
-import { color } from '../tokens/semantic-color';
+import { color } from '../tokens/color/semantic';
 import { ICON_SIZE_MAP } from './constants';
 import type { IconProps } from './types';
 
