@@ -8,7 +8,7 @@ import {
 } from 'react';
 import { color } from '../../tokens/color/semantic';
 import { layers } from '../../tokens/layers';
-import { Header } from '../header/Header';
+import { LayoutHeader } from '../header/LayoutHeader';
 
 /* Types & Context  */
 
@@ -212,7 +212,7 @@ export const Layout = ({
 };
 
 /** A default header to be rendered in the Layout when viewed from a phone, if one is not provided */
-const DefaultHeader: ReactNode = <Header />; 
+const DefaultHeader: ReactNode = <LayoutHeader />; 
 const SIDEBAR_WIDTH = '300px';
 const RAIL_WIDTH = '100px';
 

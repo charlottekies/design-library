@@ -20,7 +20,7 @@ export interface HeaderProps {
   menuIcon?: ReactNode;
 }
 
-export const Header = ({
+export const LayoutHeader = ({
   children,
   menuIcon = <Hamburger color="#ff00ff" />,
 }: HeaderProps) => {
@@ -51,7 +51,7 @@ const shouldShowToggle =
 };
 
 
-const StyledHeader = styled.header`
+const StyledHeader = styled.div`
   position: relative;
   display: flex;
   align-items: center;

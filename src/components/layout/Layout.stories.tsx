@@ -4,9 +4,9 @@ import React from 'react';
 import { Layout } from './Layout';
 import { color } from '../../tokens/color/semantic';
 
-import { Sidebar } from '../sidebar/Sidebar';
-import { Rail } from '../rail/Rail';
-import { Header } from '../header/Header';
+import { LayoutSidebar } from '../sidebar/LayoutSidebar';
+import { LayoutRail } from '../rail/LayoutRail';
+import { LayoutHeader } from '../header/LayoutHeader';
 import { Text } from '../../components/text/Text';
 import { space } from '../../tokens/space';
 
@@ -149,20 +149,20 @@ const SidebarContent = () => (
 ---------------------------------------- */
 
 const RailComponent = () => (
-  <Rail>
+  <LayoutRail>
     <NavItem
       label=""
       isActive
       icon={<span>🏠</span>}
     />
     <NavItem label="" icon={<span>⚙️</span>} />
-  </Rail>
+  </LayoutRail>
 );
 
 const MySidebar = () => (
-  <Sidebar>
+  <LayoutSidebar>
     <SidebarContent />
-  </Sidebar>
+  </LayoutSidebar>
 );
 
 /* ---------------------------------------
@@ -171,7 +171,7 @@ const MySidebar = () => (
 
 export const Default: Story = {
   args: {
-    header: <Header><Text variant="h2" renderAs='span'>Header</Text></Header>,
+    header: <LayoutHeader><Text variant="h2" renderAs='span'>Header</Text></LayoutHeader>,
     sidebar: <MySidebar />,
     children: (
       <Placeholder
@@ -185,7 +185,7 @@ export const Default: Story = {
 
 export const WithRail: Story = {
   args: {
-    header: <Header><Text variant="h2" renderAs='span'>Header</Text></Header>,    sidebar: <MySidebar />,
+    header: <LayoutHeader><Text variant="h2" renderAs='span'>Header</Text></LayoutHeader>,    sidebar: <MySidebar />,
     rail: <RailComponent />,
     children: (
       <Placeholder
@@ -212,7 +212,7 @@ export const NoHeader: Story = {
 
 export const NoSidebar: Story = {
   args: {
-    header: <Header><Text variant="h2" renderAs='span'>Header</Text></Header>,
+    header: <LayoutHeader><Text variant="h2" renderAs='span'>Header</Text></LayoutHeader>,
     children: (
       <Placeholder
         label="Main Content"
@@ -225,7 +225,7 @@ export const NoSidebar: Story = {
 
 export const NoSidebarWithRail: Story = {
   args: {
-    header: <Header><Text variant="h2" renderAs='span'>Header</Text></Header>,
+    header: <LayoutHeader><Text variant="h2" renderAs='span'>Header</Text></LayoutHeader>,
     rail: <RailComponent />,
     children: (
       <Placeholder
@@ -240,9 +240,9 @@ export const NoSidebarWithRail: Story = {
 export const CustomMenuIcon: Story = {
   args: {
     header: (
-      <Header menuIcon={<span style={{ fontSize: 20 }}>🍔</span>}>
+      <LayoutHeader menuIcon={<span style={{ fontSize: 20 }}>🍔</span>}>
         <Text variant='h2' renderAs='span'>Header</Text>
-      </Header>
+      </LayoutHeader>
     ),
     sidebar: <MySidebar />,
     children: (

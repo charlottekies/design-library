@@ -14,7 +14,7 @@ interface RailProps {
  * A compact right rail (icon/tool strip style)
  * fixed width: 100px
  */
-export const Rail = ({
+export const LayoutRail = ({
   footer,
   children,
 }: RailProps) => {

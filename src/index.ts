@@ -10,9 +10,9 @@ export { layers } from "./tokens/layers";
 
 /* components */ 
 export { Layout } from "./components/layout/Layout";
-export { Header } from "./components/header/Header";
-export { Sidebar } from "./components/sidebar/Sidebar";
-export { Rail } from "./components/rail/Rail";
+export { LayoutHeader as Header } from "./components/header/LayoutHeader";
+export { LayoutSidebar as Sidebar } from "./components/sidebar/LayoutSidebar";
+export { LayoutRail as Rail } from "./components/rail/LayoutRail";
 export { Button } from "./components/buttons/Button";
 
 /* icons */
