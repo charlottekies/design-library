@@ -1,5 +1,11 @@
 # @chopekies/design-library
 
+## 0.1.7
+
+### Patch Changes
+
+- c44dc8b: Adds Text and Typography
+
 ## 0.1.6
 
 ### Patch Changes
