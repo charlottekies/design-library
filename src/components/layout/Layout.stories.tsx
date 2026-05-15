@@ -72,8 +72,7 @@ const NavItem = ({ icon, label, isActive }: NavItemProps) => (
     style={{
       display: 'flex',
       alignItems: 'center',
-      gap: space.space07,
-      padding: `${space.space05} ${space.space07}`,
+      padding: `${space.space07} ${space.space07}`,
       borderRadius: 6,
       cursor: 'pointer',
       background: isActive ? color.primary.default : 'transparent',

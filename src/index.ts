@@ -7,12 +7,13 @@ export { typography } from "./tokens/typography/semantic";
 export { border } from "./tokens/border";
 export { space } from "./tokens/space";
 export { layers } from "./tokens/layers";
+export { radius } from "./tokens/radius/semantic";
 
 /* components */ 
 export { Layout } from "./components/layout/Layout";
-export { LayoutHeader as Header } from "./components/header/LayoutHeader";
-export { LayoutSidebar as Sidebar } from "./components/sidebar/LayoutSidebar";
-export { LayoutRail as Rail } from "./components/rail/LayoutRail";
+export { LayoutHeader } from "./components/header/LayoutHeader";
+export { LayoutSidebar } from "./components/sidebar/LayoutSidebar";
+export { LayoutRail } from "./components/rail/LayoutRail";
 export { Button } from "./components/buttons/Button";
 export { Text } from "./components/text/Text";
 

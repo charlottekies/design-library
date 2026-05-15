@@ -124,6 +124,7 @@ const CloseButton = styled.button`
 export const StyledSidebarNav = styled.nav`
   flex: 1;
   overflow-y: auto;
+  min-width: 0;
 `;
 
 export const StyledSidebarFooter = styled.div`
